@@ -1,0 +1,125 @@
+.custom-navbar {
+  position: relative;
+  .nav-wrapper {
+    font-weight: bold;
+    list-style: none;
+    margin: 0;
+    padding-left: 0;
+    background: #333;
+
+    .menu-item {
+      // display: inline-block;
+      padding: 0;
+      a {
+        display: block;
+        color: #2199f9;
+        text-decoration: none;
+        transition: 0.3s;
+        padding: 9px;
+        &:hover {
+          color: #fff;
+          background: #2199f9;
+        }
+      }
+    }
+
+    .active-menu {
+      background: #2199f9;
+      transition: 0.3s;
+      a {
+        color: #fff;
+      }
+    }
+
+    .menu-parent {
+      color: #2199f9;
+      cursor: pointer;
+      position: relative;
+
+      .sub-menu {
+        // display: none;
+        box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+        position: absolute;
+        z-index: 9999;
+        background: #333333;
+        text-transform: none;
+        margin: 0;
+        padding-left: 0;
+
+        .menu-item {
+          // display: block;
+        }
+      }
+      // &:hover .sub-menu {
+      //   display: block;
+      //   min-width: 112px;
+      // }
+    }
+
+    li {
+      display: inline-block;
+    }
+
+    // Menu có bao nhiêu level thì khai báo hết ở đây
+    .level2,
+    .level3,
+    .level4,
+    .level5 {
+      display: none;
+    }
+
+    // Tương tự: menu có bao nhiêu level thì khai báo hover hết ở đây
+    .level1:hover .level2 {
+      display: block;
+    }
+    .level2:hover .level3 {
+      display: block;
+    }
+    .level3:hover .level4 {
+      display: block;
+    }
+    .level4:hover .level5 {
+      display: block;
+    }
+
+    // Riêng thằng level2 thì CSS như ở dưới, vì nó phải ở dưới thằng level1
+    ul.level2 {
+      left: 0;
+      top: 100%;
+      width: 123px;
+    }
+
+    // Từ thằng con level3 trở đi, phải ở bên phải cha nó
+    ul.level3,
+    ul.level4,
+    ul.level5 {
+      left: 100%;
+      top: 0;
+      width: 123px;
+    }
+
+    .caret {
+      margin-left: 5px;
+    }
+  }
+
+  .userinfo-wrapper {
+    position: absolute;
+    right: 9px;
+    top: 8px;
+    color: #fff;
+    .logout-link {
+      cursor: pointer;
+      color: #2199f9;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    a {
+      color: #2199f9;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
