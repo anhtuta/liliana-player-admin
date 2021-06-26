@@ -3,7 +3,7 @@ import Moment from 'react-moment';
 import Table from '../../components/Table/Table';
 import SearchBox from '../../components/Input/SearchBox';
 import Button from '../../components/Button/Button';
-import { ACTION_ADD, ACTION_EDIT, ROLES } from '../../constants/Constants';
+import { ACTION_ADD, ACTION_EDIT } from '../../constants/Constants';
 import SongUpsertModal from './SongUpsertModal';
 import Toast from '../../components/Toast/Toast';
 import ConfirmModal from '../../components/Modal/ConfirmModal';
@@ -35,12 +35,17 @@ class Song extends PureComponent {
           return (
             <div className="td-song-info">
               <img
-                className="song-album"
-                src={original.imageUrl ? process.env.REACT_APP_HOST_API + original.imageUrl : musicIcon}
+                className="song-picture"
+                src={
+                  original.imageUrl
+                    ? process.env.REACT_APP_HOST_API + original.imageUrl
+                    : musicIcon
+                }
               />
               <div className="song-item">
                 <div className="song-title">{original.title}</div>
                 <div className="song-artist">{original.artist}</div>
+                <div className="song-album">({original.album})</div>
               </div>
             </div>
           );
@@ -68,12 +73,8 @@ class Song extends PureComponent {
         Cell: ({ original }) => (
           <Moment format="HH:mm DD/MM/YYYY">{original.updated_at}</Moment>
         )
-      }
-    ];
-
-    // Only user has ROLE_BOOK_MANAGER can modify song (create, edit, delete)
-    if (this.isSongManager()) {
-      this.columns.push({
+      },
+      {
         Header: 'Action',
         Cell: ({ original }) => (
           <div>
@@ -89,19 +90,9 @@ class Song extends PureComponent {
           </div>
         ),
         width: 80
-      });
-    }
+      }
+    ];
   }
-
-  isSongManager = () => {
-    return true;
-    const { userInfo } = this.props;
-    return (
-      userInfo &&
-      userInfo.roleArray &&
-      userInfo.roleArray.includes(ROLES.ROLE_BOOK_MANAGER)
-    );
-  };
 
   componentDidMount() {
     // get all type for creating new or updating song
@@ -134,8 +125,8 @@ class Song extends PureComponent {
     });
     const lumenParams = {
       ...newParams,
-      page: newParams.page + 1   // Because Lumen start page is index 1
-    }
+      page: newParams.page + 1 // Because Lumen start page is index 1
+    };
     SongService.getSongs(lumenParams)
       .then((res) => {
         this.setState({
@@ -167,18 +158,13 @@ class Song extends PureComponent {
     });
   };
 
-  getTypeOptionById = (id) => {
-    return this.state.typeOptions.find((option) => {
-      return option.value === id;
-    });
-  };
-
   onUpdate = (original) => {
+    console.log('original: ', original)
     const selectedRow = {
       id: original.id,
       title: original.title,
-      author: original.author,
-      type: this.getTypeOptionById(original.type.id),
+      artist: original.artist,
+      type: original.type,
       price: original.price
     };
     this.setState({
@@ -245,14 +231,11 @@ class Song extends PureComponent {
           <div className="width50">
             <SearchBox name="searchText" onSearch={this.onSearch} />
           </div>
-
-          {this.isSongManager() && (
-            <Button
-              text="Add new"
-              className="btn-success btn-add-new"
-              onClick={this.onAddNew}
-            />
-          )}
+          <Button
+            text="Add new"
+            className="btn-success btn-add-new"
+            onClick={this.onAddNew}
+          />
         </div>
 
         <Table

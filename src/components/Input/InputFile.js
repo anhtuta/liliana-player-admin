@@ -10,7 +10,6 @@ class InputFile extends PureComponent {
     };
     this.inputFile = React.createRef();
     this.dropArea = React.createRef();
-    console.log(this.inputFile);
   }
 
   componentDidMount() {
@@ -56,7 +55,6 @@ class InputFile extends PureComponent {
   };
 
   handleFile = (file) => {
-    console.log(file);
     if (file) {
       this.setState({
         fileName: file.name

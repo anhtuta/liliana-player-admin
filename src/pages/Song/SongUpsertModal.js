@@ -27,7 +27,7 @@ class SongUpsertModal extends PureComponent {
       fileName: '',
       loading: false
     };
-    this.inputAlbum = React.createRef();
+    this.inputPicture = React.createRef();
   }
 
   handleOnChange = (obj) => {
@@ -136,7 +136,7 @@ class SongUpsertModal extends PureComponent {
     );
   };
 
-  changeAlbumPicture = (e) => {
+  changePicture = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -148,14 +148,14 @@ class SongUpsertModal extends PureComponent {
     };
   };
 
-  resetAlbumPicture = () => {
+  resetPicture = () => {
     this.setState({
       pictureBase64: null
     })
   };
 
-  albumFileTypes = ['.jpg', '.png', '.jpeg'];  // ['image/*']
-  saveAlbumPicture = () => {};
+  pictureFileTypes = ['.jpg', '.png', '.jpeg'];  // ['image/*']
+  savePicture = () => {};
 
   render() {
     const { showUpsertModal, onCloseUpsertModal, typeOptions } = this.props;
@@ -189,7 +189,7 @@ class SongUpsertModal extends PureComponent {
           isRequire={true}
           fileName={fileName}
         />
-        <div className="title-artist-album">
+        <div className="title-artist-picture">
           <div className="title-artist">
             <InputText
               name="title"
@@ -206,13 +206,13 @@ class SongUpsertModal extends PureComponent {
               onChange={this.handleOnChange}
             />
           </div>
-          <div className="album">
+          <div className="picture">
             <input
               type="file"
               style={{ display: 'none' }}
-              accept={this.albumFileTypes.join(',')}
-              ref={(node) => (this.inputAlbum = node)}
-              onChange={this.changeAlbumPicture}
+              accept={this.pictureFileTypes.join(',')}
+              ref={(node) => (this.inputPicture = node)}
+              onChange={this.changePicture}
             />
             <img
               src={
@@ -224,15 +224,15 @@ class SongUpsertModal extends PureComponent {
             <div className="btn-wrapper">
               <i
                 className="fas fa-edit icon-btn-action icon-btn-edit"
-                onClick={() => this.inputAlbum.click()}
-                title="Change album picture"
+                onClick={() => this.inputPicture.click()}
+                title="Change picture"
               ></i>
               &nbsp;
               {pictureBase64 && (
                 <i
                   className="fas fa-trash-alt icon-btn-action icon-btn-delete"
-                  onClick={this.resetAlbumPicture}
-                  title="Delete album picture"
+                  onClick={this.resetPicture}
+                  title="Delete picture"
                 ></i>
               )}
             </div>
