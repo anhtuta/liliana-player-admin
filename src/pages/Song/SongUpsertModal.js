@@ -6,21 +6,28 @@ import NormalModal from '../../components/Modal/NormalModal';
 import { ACTION_ADD } from '../../constants/Constants';
 import Toast from '../../components/Toast/Toast';
 import SongService from './SongService';
+import musicIcon from '../../assets/icons/music_icon.jpg';
 
 class SongUpsertModal extends PureComponent {
   constructor(props) {
     super(props);
-    const { id, title, author, category, price } = props.selectedRow;
+    const { id, title, artist, type } = props.selectedRow;
     this.state = {
       id,
       title,
-      author,
-      category,
-      price,
+      artist,
+      pictureBase64: null,
+      imageFormat: '',
+      album: '',
+      type,
       invalid: {
         title: false
-      }
+      },
+      file: null,
+      fileName: '',
+      loading: false
     };
+    this.inputAlbum = React.createRef();
   }
 
   handleOnChange = (obj) => {
@@ -31,150 +38,219 @@ class SongUpsertModal extends PureComponent {
     });
   };
 
-  handleOnChangeCategory = (obj) => {
+  handleOnChangeType = (obj) => {
     this.setState({
-      category: { label: obj.label, value: obj.value }
+      type: { label: obj.label, value: obj.value }
     });
   };
 
   onSave = () => {
-    const { id, title, author, category, price, invalid } = this.state;
-    if (!title || !author || !category || !price) {
+    const { id, title, artist, pictureBase64, album, type, file } = this.state;
+    if (!title || !artist || !type) {
       Toast.error('Please fill all required fields');
       return;
     }
-    if (invalid.price) {
-      Toast.error('Price is not a valid number!');
-      return;
-    }
-    const data = {
-      id,
-      title,
-      author,
-      categoryId: category.value,
-      price
-    };
+    this.setState({ loading: true });
+    let formData = new FormData();
+    formData.append('id', id);
+    formData.append('title', title);
+    formData.append('artist', artist);
+    if (pictureBase64) formData.append('pictureBase64', pictureBase64);
+    formData.append('album', album);
+    formData.append('type', type.value);
+    formData.append('file', file);
+    // const data = {
+    //   id,
+    //   title,
+    //   artist,
+    //   pictureBase64,
+    //   album,
+    //   type: type.value,
+    //   file
+    // };
+    // console.log('data: ', data);
     const { action } = this.props;
     if (action === ACTION_ADD) {
-      SongService.createSong(data)
+      SongService.createSong(formData)
         .then((res) => {
           Toast.success(res.message);
+          this.setState({ loading: false });
           this.props.onSave();
         })
         .catch((err) => {
           console.log(err);
           Toast.error(err);
-        });
-    } else {
-      SongService.updateSong(data)
-        .then((res) => {
-          Toast.success(res.message);
-          this.props.onSave();
-        })
-        .catch((err) => {
-          console.log(err);
-          Toast.error(err);
+          this.setState({ loading: false });
         });
     }
-  };
-  
-  fileTypes = ['.mp3'];
-  uploadFile = (file) => {
-    if (file) {
-      let extension = '.' + file.name.split('.').pop().toLowerCase();
-      if (extension && this.fileTypes.indexOf(extension) !== -1) {
-        this.setState({
-          fileName: file.name,
-          uploading: true,
-          uploaded: false,
-          uploadSuccess: false,
-          docsSampleSuccess: false,
-          docsSample: null
-        });
-        let formData = new FormData();
-        formData.append('img', file);  // img = name của field input file, do bên BE quy định
-        HomeService.uploadDocsFile(
-          formData,
-          (res) => {
-            this.setState({
-              file,
-              textData: this.convertJson(res),
-              // textData: this.convertJson(SAMPLE_RESPONSE_1),
-              uploading: false,
-              uploaded: true,
-              uploadSuccess: true
-            });
-          },
-          (err) => {
-            Toast.error(err);
-            this.setState({
-              uploading: false,
-              uploaded: true,
-              uploadSuccess: false
-            });
-          }
-        );
-      } else {
-        Toast.error(
-          'Invalid file, please upload ' + this.fileTypes.join(',') + ' files only'
-        );
-      }
-    }
+    // else {
+    //   SongService.updateSong(data)
+    //     .then((res) => {
+    //       Toast.success(res.message);
+    //       this.props.onSave();
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //       Toast.error(err);
+    //     });
+    // }
   };
 
+  fileTypes = ['.mp3'];
+  loadMetadata = (file) => {
+    let url = file.urn || file.name;
+    let imageFormat = '';
+    window.ID3.loadTags(
+      url,
+      () => {
+        const tags = window.ID3.getAllTags(url);
+        const { title, artist, album } = tags;
+        let pictureBase64 = null;
+
+        if ('picture' in tags) {
+          const image = tags.picture;
+          let base64String = '';
+          for (let i = 0; i < image.data.length; i++) {
+            base64String += String.fromCharCode(image.data[i]);
+          }
+          pictureBase64 = window.btoa(base64String);
+          imageFormat = image.format;
+        }
+
+        this.setState({ title, artist, pictureBase64, imageFormat, album, file });
+      },
+      {
+        tags: [
+          'artist',
+          'title',
+          'album',
+          'year',
+          'comment',
+          'track',
+          'genre',
+          'lyrics',
+          'picture'
+        ],
+        dataReader: window.FileAPIReader(file)
+      }
+    );
+  };
+
+  changeAlbumPicture = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      const pictureBase64 = reader.result.replace('data:', '').replace(/^.+,/, '');
+      this.setState({
+        pictureBase64
+      })
+    };
+  };
+
+  resetAlbumPicture = () => {
+    this.setState({
+      pictureBase64: null
+    })
+  };
+
+  albumFileTypes = ['.jpg', '.png', '.jpeg'];  // ['image/*']
+  saveAlbumPicture = () => {};
 
   render() {
-    const { showUpsertModal, onCloseUpsertModal, categoryOptions } = this.props;
-    const { title, author, category, price } = this.state;
+    const { showUpsertModal, onCloseUpsertModal, typeOptions } = this.props;
+    const {
+      title,
+      artist,
+      pictureBase64,
+      imageFormat,
+      album,
+      type,
+      fileName,
+      loading
+    } = this.state;
 
     return (
       <NormalModal
+        customClass="song-upsert-modal"
         show={showUpsertModal}
-        modalTitle="Add new book"
+        modalTitle="Add new song"
         saveButtonText="Save"
         cancelButtonText="Cancel"
         onSave={this.onSave}
         onClose={onCloseUpsertModal}
         onCancel={onCloseUpsertModal}
+        disabledBtn={loading}
       >
         <InputFile
-          onChange={this.uploadFile}
+          onChange={this.loadMetadata}
           types={this.fileTypes}
-          placeHolder="Please upload a mp3 file..."
+          label="Please upload a mp3 file..."
+          isRequire={true}
           fileName={fileName}
-          uploading={uploading}
-          uploaded={uploaded}
-          uploadSuccess={uploadSuccess}
         />
+        <div className="title-artist-album">
+          <div className="title-artist">
+            <InputText
+              name="title"
+              label="Title"
+              defaultValue={title}
+              isRequire={true}
+              onChange={this.handleOnChange}
+            />
+            <InputText
+              name="artist"
+              label="Artist"
+              defaultValue={artist}
+              isRequire={true}
+              onChange={this.handleOnChange}
+            />
+          </div>
+          <div className="album">
+            <input
+              type="file"
+              style={{ display: 'none' }}
+              accept={this.albumFileTypes.join(',')}
+              ref={(node) => (this.inputAlbum = node)}
+              onChange={this.changeAlbumPicture}
+            />
+            <img
+              src={
+                pictureBase64
+                  ? 'data:' + imageFormat + ';base64,' + pictureBase64
+                  : musicIcon
+              }
+            />
+            <div className="btn-wrapper">
+              <i
+                className="fas fa-edit icon-btn-action icon-btn-edit"
+                onClick={() => this.inputAlbum.click()}
+                title="Change album picture"
+              ></i>
+              &nbsp;
+              {pictureBase64 && (
+                <i
+                  className="fas fa-trash-alt icon-btn-action icon-btn-delete"
+                  onClick={this.resetAlbumPicture}
+                  title="Delete album picture"
+                ></i>
+              )}
+            </div>
+          </div>
+        </div>
         <InputText
-          name="title"
-          label="Title"
-          defaultValue={title}
-          isRequire={true}
-          onChange={this.handleOnChange}
-        />
-        <InputText
-          name="author"
-          label="Author"
-          defaultValue={author}
-          isRequire={true}
+          name="album"
+          label="Album"
+          defaultValue={album}
           onChange={this.handleOnChange}
         />
         <Select
-          name="category"
-          label="Category"
-          defaultOption={category}
-          options={categoryOptions}
+          name="type"
+          label="Type"
+          defaultOption={type}
+          options={typeOptions}
           isRequire={true}
-          onChange={this.handleOnChangeCategory}
-        />
-        <InputText
-          name="price"
-          label="Price"
-          defaultValue={price}
-          regex="[0-9]+$"
-          isRequire={true}
-          onChange={this.handleOnChange}
+          onChange={this.handleOnChangeType}
         />
       </NormalModal>
     );

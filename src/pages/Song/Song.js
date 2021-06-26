@@ -23,14 +23,14 @@ class Song extends PureComponent {
       action: '',
       showUpsertModal: false,
       showConfirmModal: false,
-      categoryOptions: [],
+      typeOptions: [],
       selectedRow: {}
     };
 
     this.columns = [
       {
         Header: 'Song',
-        accessor: 'song',
+        accessor: 'title',
         Cell: ({ original }) => {
           return (
             <div className="td-song-info">
@@ -57,9 +57,16 @@ class Song extends PureComponent {
       },
       {
         Header: 'Created date',
-        accessor: 'createdDate',
+        accessor: 'created_date',
         Cell: ({ original }) => (
           <Moment format="HH:mm DD/MM/YYYY">{original.created_date}</Moment>
+        )
+      },
+      {
+        Header: 'Updated date',
+        accessor: 'updated_at',
+        Cell: ({ original }) => (
+          <Moment format="HH:mm DD/MM/YYYY">{original.updated_at}</Moment>
         )
       }
     ];
@@ -97,19 +104,19 @@ class Song extends PureComponent {
   };
 
   componentDidMount() {
-    // get all category for creating new or updating song
-    // CategoryService.getAllCategories()
-    //   .then((res) => {
-    //     const categoryOptions = res.data.map((item) => ({
-    //       value: item.id,
-    //       label: item.name
-    //     }));
-    //     this.setState({ categoryOptions });
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //     Toast.error(err);
-    //   });
+    // get all type for creating new or updating song
+    SongService.getAllTypes()
+      .then((res) => {
+        const typeOptions = res.map((item) => ({
+          value: item.type,
+          label: item.type
+        }));
+        this.setState({ typeOptions });
+      })
+      .catch((err) => {
+        console.log(err);
+        Toast.error(err);
+      });
   }
 
   getSongs = (params) => {
@@ -122,12 +129,14 @@ class Song extends PureComponent {
       ...params,
       sort
     };
-    newParams.page = newParams.page + 1;  // Because Lumen start page is index 1
     this.setState({
       params: newParams
     });
-    console.log('newParams: ', newParams)
-    SongService.getSongs(newParams)
+    const lumenParams = {
+      ...newParams,
+      page: newParams.page + 1   // Because Lumen start page is index 1
+    }
+    SongService.getSongs(lumenParams)
       .then((res) => {
         this.setState({
           songData: {
@@ -158,8 +167,8 @@ class Song extends PureComponent {
     });
   };
 
-  getCategoryOptionById = (id) => {
-    return this.state.categoryOptions.find((option) => {
+  getTypeOptionById = (id) => {
+    return this.state.typeOptions.find((option) => {
       return option.value === id;
     });
   };
@@ -169,7 +178,7 @@ class Song extends PureComponent {
       id: original.id,
       title: original.title,
       author: original.author,
-      category: this.getCategoryOptionById(original.category.id),
+      type: this.getTypeOptionById(original.type.id),
       price: original.price
     };
     this.setState({
@@ -224,7 +233,7 @@ class Song extends PureComponent {
       loading,
       showUpsertModal,
       showConfirmModal,
-      categoryOptions,
+      typeOptions,
       action,
       selectedRow
     } = this.state;
@@ -259,7 +268,7 @@ class Song extends PureComponent {
           <SongUpsertModal
             showUpsertModal={showUpsertModal}
             onCloseUpsertModal={this.onCloseUpsertModal}
-            categoryOptions={categoryOptions}
+            typeOptions={typeOptions}
             selectedRow={selectedRow}
             action={action}
             onSave={this.onSave}

@@ -16,11 +16,16 @@ const deleteSong = (id) => {
   return axiosClient.delete('/api/song/id/' + id);
 };
 
+const getAllTypes = (params) => {
+  return axiosClient.get('/api/song/type/all', { params });
+};
+
 const SongService = {
   getSongs,
   createSong,
   updateSong,
-  deleteSong
+  deleteSong,
+  getAllTypes
 };
 
 export default SongService;

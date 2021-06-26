@@ -4,16 +4,24 @@
     box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
+}
 
-  /* Icon button */
-  .icon-btn-action {
-    cursor: pointer;
+/* Icon button */
+.icon-btn-action {
+  cursor: pointer;
+}
+.icon-btn-edit {
+  transition: 0.1s;
+  color: #2199f9;
+  &:hover {
+    color: #0068ff;
   }
-  .icon-btn-edit {
-    color: #2199f9;
-  }
-  .icon-btn-delete {
-    color: red;
+}
+.icon-btn-delete {
+  transition: 0.1s;
+  color: #ff0000;
+  &:hover {
+    color: #cc0000;
   }
 }
 

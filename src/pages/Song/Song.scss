@@ -32,3 +32,33 @@
     }
   }
 }
+
+.song-upsert-modal {
+  .title-artist-album {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .title-artist {
+    width: 60%;
+  }
+  .album {
+    width: 32%;
+    position: relative;
+
+    &:hover img {
+      opacity: 0.5;
+    }
+
+    img {
+      width: 100%;
+      transition: 0.2s;
+    }
+
+    .btn-wrapper {
+      position: absolute;
+      bottom: 10px;
+      right: 2px;
+    }
+  }
+}
