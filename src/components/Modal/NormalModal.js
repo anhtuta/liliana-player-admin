@@ -15,7 +15,7 @@ const NormalModal = (props) => {
     onClose,
     children,
     isDelete = false,
-    disabledSaveBtn = false,
+    disabledBtn = false,
     buttons
   } = props;
 
@@ -38,7 +38,7 @@ const NormalModal = (props) => {
             className={isDelete ? 'btn-danger' : 'btn-success'}
             onClick={onSave}
             text={saveButtonText}
-            disabled={disabledSaveBtn}
+            disabled={disabledBtn}
           />
         )}
         {cancelButtonText && (
@@ -47,6 +47,7 @@ const NormalModal = (props) => {
             className="btn-secondary"
             onClick={onCancel}
             text={cancelButtonText}
+            disabled={disabledBtn}
           />
         )}
         {buttons &&

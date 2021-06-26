@@ -23,7 +23,8 @@
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     line-height: initial; /* override this prop of bootstrap */
   }
-  .input-text:focus {
+  .input-text:focus,
+  .drop-highlight {
     color: #495057;
     background-color: #fff;
     border-color: #80bdff;
@@ -31,27 +32,23 @@
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
   }
   .input-file-wrapper {
+    display: flex;
     .input-file-name {
-      display: inline-block;
-      border: 1px solid #2199f9;
-      width: calc(100% - 120px);
-      height: 34px;
-      position: relative;
+      color: #a2a2a2;
+      border: 1px solid #ced4da;
+      width: calc(100% - 205px);
       padding: 5px;
-      padding-right: 62px;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
       border-radius: 3px;
+      cursor: default;
     }
     .input-file-browse {
       background: #2199f9;
       color: #fff;
-      position: absolute;
-      top: 0;
-      right: 0;
+      width: 85px;
       padding: 5px;
-      display: inline-block;
       cursor: pointer;
       transition: 0.2s;
       &:hover {
@@ -59,10 +56,9 @@
       }
     }
     .input-file-status {
-      display: inline-block;
-      position: relative;
-      top: -11px;
-      margin-left: 5px;
+      width: 120px;
+      padding: 5px;
+      cursor: pointer;
       .uploading-icon {
         display: inline-block;
         width: 30px;
@@ -71,6 +67,9 @@
         background-size: cover;
         position: relative;
         top: 8px;
+      }
+      .uploading i {
+        color: #2199f9;
       }
       .upload-success i {
         color: #40e000;

@@ -2,13 +2,61 @@ import React, { PureComponent } from 'react';
 import './Input.scss';
 
 class InputFile extends PureComponent {
-  state = {
-    fileName: ''
-  };
-  inputFile = React.createRef();
+  constructor(props) {
+    super(props);
+    this.state = {
+      fileName: '',
+      isDragging: false
+    };
+    this.inputFile = React.createRef();
+    this.dropArea = React.createRef();
+    console.log(this.inputFile);
+  }
+
+  componentDidMount() {
+    const dropArea = this.dropArea.current;
+    const preventDefaults = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    // Prevent default drag behaviors
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
+      dropArea.addEventListener(eventName, preventDefaults);
+      document.body.addEventListener(eventName, preventDefaults);
+    });
+
+    // Highlight drop area when item is dragged over it
+    ['dragenter', 'dragover'].forEach((eventName) => {
+      dropArea.addEventListener(eventName, () => {
+        this.setState({
+          isDragging: true
+        });
+      });
+    });
+
+    ['dragleave', 'drop'].forEach((eventName) => {
+      dropArea.addEventListener(eventName, () => {
+        this.setState({
+          isDragging: false
+        });
+      });
+    });
+
+    // Handle dropped files
+    dropArea.addEventListener('drop', (e) => {
+      var files = e.dataTransfer.files;
+      this.handleFile(files[0]);
+    });
+  }
 
   onChange = (e) => {
     const file = e.target.files[0];
+    this.handleFile(file);
+  };
+
+  handleFile = (file) => {
+    console.log(file);
     if (file) {
       this.setState({
         fileName: file.name
@@ -18,7 +66,7 @@ class InputFile extends PureComponent {
   };
 
   render() {
-    const { fileName } = this.state;
+    const { fileName, isDragging } = this.state;
     const {
       disabled,
       types,
@@ -27,7 +75,8 @@ class InputFile extends PureComponent {
       isRequire = false,
       uploading,
       uploaded,
-      uploadSuccess
+      uploadSuccess,
+      hideDragArea = false
     } = this.props;
 
     return (
@@ -46,26 +95,29 @@ class InputFile extends PureComponent {
             ref={(node) => (this.inputFile = node)}
             onChange={this.onChange}
           />
-          <div className="input-file-name">
-            {fileName ? (
-              fileName
-            ) : (
-              <span style={{ color: '#a2a2a2' }}>{placeHolder ? placeHolder : "Please upload a file..."}</span>
-            )}
-            <span
-              className="input-file-browse"
-              disabled={disabled}
-              onClick={() => {
-                this.inputFile.click();
-              }}
-            >
-              <i className="far fa-file"></i> Browse
-            </span>
+          <div
+            style={{ display: hideDragArea ? 'none' : '' }}
+            className={`input-file-name ${isDragging ? 'drop-highlight' : ''}`}
+            ref={this.dropArea}
+            title={fileName ? fileName : ''}
+          >
+            {fileName ? fileName : placeHolder ? placeHolder : 'Drag a file here...'}
           </div>
+          <span
+            className="input-file-browse"
+            disabled={disabled}
+            onClick={() => {
+              this.inputFile.click();
+            }}
+            title=""
+          >
+            <i className="far fa-file"></i> Browse
+          </span>
           <span className="input-file-status">
             {uploading && (
               <span className="uploading">
-                <span className="uploading-icon"></span>Uploading...
+                {/* <span className="uploading-icon"></span> */}
+                <i class="fas fa-fan fa-spin"></i> Uploading...
               </span>
             )}
             {!uploading && uploaded && uploadSuccess && (

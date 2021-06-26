@@ -12,6 +12,13 @@ class InputText extends PureComponent {
     };
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.defaultValue !== prevState.value) {
+      return { value: nextProps.defaultValue };
+    }
+    return null;
+  }
+
   onChange = (e) => {
     const { value } = e.target;
     const maxLength = this.props.maxLength
