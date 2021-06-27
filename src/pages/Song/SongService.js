@@ -8,8 +8,10 @@ const createSong = (data) => {
   return axiosClient.post('/api/song', data);
 };
 
-const updateSong = (data) => {
-  return axiosClient.put('/api/song/id/' + data.id, data);
+// Note: in Lumen, PUT method cannot read FormData
+// Ref: https://stackoverflow.com/q/50691938/7688028
+const updateSong = (id, data) => {
+  return axiosClient.post('/api/song/id/' + id, data);
 };
 
 const deleteSong = (id) => {

@@ -158,14 +158,22 @@ class Song extends PureComponent {
     });
   };
 
+  getTypeOption = (name) => {
+    return this.state.typeOptions.find((option) => {
+      return option.value === name;
+    });
+  };
+
   onUpdate = (original) => {
-    console.log('original: ', original)
     const selectedRow = {
       id: original.id,
       title: original.title,
       artist: original.artist,
-      type: original.type,
-      price: original.price
+      imageUrl: original.imageUrl
+        ? process.env.REACT_APP_HOST_API + original.imageUrl
+        : null,
+      album: original.album,
+      type: this.getTypeOption(original.type)
     };
     this.setState({
       action: ACTION_EDIT,

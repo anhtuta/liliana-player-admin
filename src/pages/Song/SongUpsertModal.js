@@ -3,7 +3,7 @@ import InputText from '../../components/Input/InputText';
 import InputFile from '../../components/Input/InputFile';
 import Select from '../../components/Input/Select';
 import NormalModal from '../../components/Modal/NormalModal';
-import { ACTION_ADD } from '../../constants/Constants';
+import { ACTION_ADD, ACTION_EDIT } from '../../constants/Constants';
 import Toast from '../../components/Toast/Toast';
 import SongService from './SongService';
 import musicIcon from '../../assets/icons/music_icon.jpg';
@@ -11,21 +11,22 @@ import musicIcon from '../../assets/icons/music_icon.jpg';
 class SongUpsertModal extends PureComponent {
   constructor(props) {
     super(props);
-    const { id, title, artist, type } = props.selectedRow;
+    const { id, title, artist, imageUrl, album, type } = props.selectedRow;
     this.state = {
       id,
       title,
       artist,
       pictureBase64: null,
-      imageFormat: '',
-      album: '',
+      imageUrl,
+      album,
       type,
       invalid: {
         title: false
       },
       file: null,
       fileName: '',
-      loading: false
+      loading: false,
+      removePicture: 0
     };
     this.inputPicture = React.createRef();
   }
@@ -45,32 +46,38 @@ class SongUpsertModal extends PureComponent {
   };
 
   onSave = () => {
-    const { id, title, artist, pictureBase64, album, type, file } = this.state;
+    const {
+      id,
+      title,
+      artist,
+      pictureBase64,
+      album,
+      type,
+      file,
+      removePicture
+    } = this.state;
+    const { action } = this.props;
+
     if (!title || !artist || !type) {
       Toast.error('Please fill all required fields');
       return;
     }
     this.setState({ loading: true });
+
     let formData = new FormData();
-    formData.append('id', id);
     formData.append('title', title);
     formData.append('artist', artist);
-    if (pictureBase64) formData.append('pictureBase64', pictureBase64);
+    if (pictureBase64) {
+      formData.append(
+        'pictureBase64',
+        pictureBase64.replace('data:', '').replace(/^.+,/, '')
+      );
+    }
     formData.append('album', album);
-    formData.append('type', type.value);
-    formData.append('file', file);
-    // const data = {
-    //   id,
-    //   title,
-    //   artist,
-    //   pictureBase64,
-    //   album,
-    //   type: type.value,
-    //   file
-    // };
-    // console.log('data: ', data);
-    const { action } = this.props;
+
     if (action === ACTION_ADD) {
+      formData.append('type', type.value);
+      formData.append('file', file);
       SongService.createSong(formData)
         .then((res) => {
           Toast.success(res.message);
@@ -82,24 +89,25 @@ class SongUpsertModal extends PureComponent {
           Toast.error(err);
           this.setState({ loading: false });
         });
+    } else {
+      formData.append('removePicture', removePicture);
+      SongService.updateSong(id, formData)
+        .then((res) => {
+          Toast.success(res.message);
+          this.setState({ loading: false });
+          this.props.onSave();
+        })
+        .catch((err) => {
+          console.log(err);
+          this.setState({ loading: false });
+          Toast.error(err);
+        });
     }
-    // else {
-    //   SongService.updateSong(data)
-    //     .then((res) => {
-    //       Toast.success(res.message);
-    //       this.props.onSave();
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //       Toast.error(err);
-    //     });
-    // }
   };
 
   fileTypes = ['.mp3'];
   loadMetadata = (file) => {
     let url = file.urn || file.name;
-    let imageFormat = '';
     window.ID3.loadTags(
       url,
       () => {
@@ -113,11 +121,10 @@ class SongUpsertModal extends PureComponent {
           for (let i = 0; i < image.data.length; i++) {
             base64String += String.fromCharCode(image.data[i]);
           }
-          pictureBase64 = window.btoa(base64String);
-          imageFormat = image.format;
+          pictureBase64 = 'data:' + image.format + ';base64,' + window.btoa(base64String);
         }
 
-        this.setState({ title, artist, pictureBase64, imageFormat, album, file });
+        this.setState({ title, artist, pictureBase64, album, file });
       },
       {
         tags: [
@@ -141,29 +148,32 @@ class SongUpsertModal extends PureComponent {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      const pictureBase64 = reader.result.replace('data:', '').replace(/^.+,/, '');
+      const pictureBase64 = reader.result;
       this.setState({
-        pictureBase64
-      })
+        pictureBase64,
+        removePicture: 0
+      });
     };
   };
 
   resetPicture = () => {
     this.setState({
-      pictureBase64: null
-    })
+      pictureBase64: null,
+      imageUrl: null,
+      removePicture: 1
+    });
   };
 
-  pictureFileTypes = ['.jpg', '.png', '.jpeg'];  // ['image/*']
+  pictureFileTypes = ['.jpg', '.png', '.jpeg']; // ['image/*']
   savePicture = () => {};
 
   render() {
-    const { showUpsertModal, onCloseUpsertModal, typeOptions } = this.props;
+    const { showUpsertModal, onCloseUpsertModal, typeOptions, action } = this.props;
     const {
       title,
       artist,
       pictureBase64,
-      imageFormat,
+      imageUrl,
       album,
       type,
       fileName,
@@ -182,13 +192,15 @@ class SongUpsertModal extends PureComponent {
         onCancel={onCloseUpsertModal}
         disabledBtn={loading}
       >
-        <InputFile
-          onChange={this.loadMetadata}
-          types={this.fileTypes}
-          label="Please upload a mp3 file..."
-          isRequire={true}
-          fileName={fileName}
-        />
+        {action === ACTION_ADD && (
+          <InputFile
+            onChange={this.loadMetadata}
+            types={this.fileTypes}
+            label="Please upload a mp3 file..."
+            isRequire={true}
+            fileName={fileName}
+          />
+        )}
         <div className="title-artist-picture">
           <div className="title-artist">
             <InputText
@@ -214,13 +226,7 @@ class SongUpsertModal extends PureComponent {
               ref={(node) => (this.inputPicture = node)}
               onChange={this.changePicture}
             />
-            <img
-              src={
-                pictureBase64
-                  ? 'data:' + imageFormat + ';base64,' + pictureBase64
-                  : musicIcon
-              }
-            />
+            <img src={pictureBase64 ? pictureBase64 : imageUrl ? imageUrl : musicIcon} />
             <div className="btn-wrapper">
               <i
                 className="fas fa-edit icon-btn-action icon-btn-edit"
@@ -228,7 +234,7 @@ class SongUpsertModal extends PureComponent {
                 title="Change picture"
               ></i>
               &nbsp;
-              {pictureBase64 && (
+              {(pictureBase64 || imageUrl) && (
                 <i
                   className="fas fa-trash-alt icon-btn-action icon-btn-delete"
                   onClick={this.resetPicture}
@@ -251,6 +257,7 @@ class SongUpsertModal extends PureComponent {
           options={typeOptions}
           isRequire={true}
           onChange={this.handleOnChangeType}
+          isDisabled={action === ACTION_EDIT}
         />
       </NormalModal>
     );
