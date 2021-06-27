@@ -73,7 +73,10 @@ class SongUpsertModal extends PureComponent {
         pictureBase64.replace('data:', '').replace(/^.+,/, '')
       );
     }
-    formData.append('album', album);
+
+    // nếu album == null mà gửi cho BE thì thằng Lumen nó sẽ
+    // convert thành album = 'null'
+    if(album) formData.append('album', album);
 
     if (action === ACTION_ADD) {
       formData.append('type', type.value);
