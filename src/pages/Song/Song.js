@@ -5,6 +5,7 @@ import SearchBox from '../../components/Input/SearchBox';
 import Button from '../../components/Button/Button';
 import { ACTION_ADD, ACTION_EDIT } from '../../constants/Constants';
 import SongUpsertModal from './SongUpsertModal';
+import PictureModal from './PictureModal';
 import Toast from '../../components/Toast/Toast';
 import ConfirmModal from '../../components/Modal/ConfirmModal';
 import SongService from './SongService';
@@ -23,8 +24,11 @@ class Song extends PureComponent {
       action: '',
       showUpsertModal: false,
       showConfirmModal: false,
+      showPictureModal: false,
       typeOptions: [],
-      selectedRow: {}
+      selectedRow: {},
+      pictureUrl: null,
+      pictureTitle: null
     };
 
     this.columns = [
@@ -41,6 +45,11 @@ class Song extends PureComponent {
                     ? process.env.REACT_APP_HOST_API + original.imageUrl
                     : musicIcon
                 }
+                onClick={() => {
+                  if (original.imageUrl)
+                    this.displayPictureModal(original);
+                }}
+                style={{cursor: original.imageUrl ? "pointer" : "default"}}
               />
               <div className="song-item">
                 <div className="song-title">{original.title}</div>
@@ -93,6 +102,14 @@ class Song extends PureComponent {
       }
     ];
   }
+
+  displayPictureModal = (original) => {
+    this.setState({
+      showPictureModal: true,
+      pictureUrl: process.env.REACT_APP_HOST_API + original.imageUrl,
+      pictureTitle: original.title + "'s picture"
+    });
+  };
 
   componentDidMount() {
     // get all type for creating new or updating song
@@ -203,6 +220,14 @@ class Song extends PureComponent {
     });
   };
 
+  onClosePictureModal = () => {
+    this.setState({
+      showPictureModal: false,
+      pictureUrl: null,
+      pictureTitle: null
+    });
+  };
+
   onSave = () => {
     this.onCloseUpsertModal();
     this.getSongs(this.state.params);
@@ -227,9 +252,12 @@ class Song extends PureComponent {
       loading,
       showUpsertModal,
       showConfirmModal,
+      showPictureModal,
       typeOptions,
       action,
-      selectedRow
+      selectedRow,
+      pictureUrl,
+      pictureTitle
     } = this.state;
 
     return (
@@ -276,6 +304,13 @@ class Song extends PureComponent {
             onClose={this.onCloseConfirmModal}
             onCancel={this.onCloseConfirmModal}
           />
+        )}
+        {showPictureModal && (
+          <PictureModal
+            show={showPictureModal}
+            pictureUrl={pictureUrl}
+            pictureTitle={pictureTitle}
+            onClose={this.onClosePictureModal} />
         )}
       </div>
     );

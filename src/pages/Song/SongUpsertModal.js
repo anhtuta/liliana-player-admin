@@ -5,6 +5,7 @@ import Select from '../../components/Input/Select';
 import NormalModal from '../../components/Modal/NormalModal';
 import { ACTION_ADD, ACTION_EDIT } from '../../constants/Constants';
 import Toast from '../../components/Toast/Toast';
+import PictureModal from './PictureModal';
 import SongService from './SongService';
 import musicIcon from '../../assets/icons/music_icon.jpg';
 
@@ -26,7 +27,10 @@ class SongUpsertModal extends PureComponent {
       file: null,
       fileName: '',
       loading: false,
-      removePicture: 0
+      removePicture: 0,
+      showPictureModal: false,
+      pictureUrl: null,
+      pictureTitle: null
     };
     this.inputPicture = React.createRef();
   }
@@ -76,7 +80,7 @@ class SongUpsertModal extends PureComponent {
 
     // nếu album == null mà gửi cho BE thì thằng Lumen nó sẽ
     // convert thành album = 'null'
-    if(album) formData.append('album', album);
+    if (album) formData.append('album', album);
 
     if (action === ACTION_ADD) {
       formData.append('type', type.value);
@@ -168,7 +172,22 @@ class SongUpsertModal extends PureComponent {
   };
 
   pictureFileTypes = ['.jpg', '.png', '.jpeg']; // ['image/*']
-  savePicture = () => {};
+
+  displayPictureModal = (original) => {
+    this.setState({
+      showPictureModal: true,
+      pictureUrl: original.url,
+      pictureTitle: original.title + "'s picture"
+    });
+  };
+
+  onClosePictureModal = () => {
+    this.setState({
+      showPictureModal: false,
+      pictureUrl: null,
+      pictureTitle: null
+    });
+  };
 
   render() {
     const { showUpsertModal, onCloseUpsertModal, typeOptions, action } = this.props;
@@ -180,14 +199,27 @@ class SongUpsertModal extends PureComponent {
       album,
       type,
       fileName,
-      loading
+      loading,
+      showPictureModal,
+      pictureUrl,
+      pictureTitle
     } = this.state;
 
     return (
       <NormalModal
         customClass="song-upsert-modal"
         show={showUpsertModal}
-        modalTitle="Add new song"
+        modalTitle={
+          loading ? (
+            <span className="uploading">
+              <i class="fas fa-fan fa-spin"></i> Wait me a second...
+            </span>
+          ) : action === ACTION_ADD ? (
+            'Add new song'
+          ) : (
+            'Update song'
+          )
+        }
         saveButtonText="Save"
         cancelButtonText="Cancel"
         onSave={this.onSave}
@@ -229,7 +261,16 @@ class SongUpsertModal extends PureComponent {
               ref={(node) => (this.inputPicture = node)}
               onChange={this.changePicture}
             />
-            <img src={pictureBase64 ? pictureBase64 : imageUrl ? imageUrl : musicIcon} />
+            <img
+              src={pictureBase64 ? pictureBase64 : imageUrl ? imageUrl : musicIcon}
+              onClick={() => {
+                const url = pictureBase64 ? pictureBase64 : imageUrl;
+                if (url) {
+                  this.displayPictureModal({ url, title });
+                }
+              }}
+              style={{ cursor: pictureBase64 || imageUrl ? 'pointer' : 'default' }}
+            />
             <div className="btn-wrapper">
               <i
                 className="fas fa-edit icon-btn-action icon-btn-edit"
@@ -262,6 +303,13 @@ class SongUpsertModal extends PureComponent {
           onChange={this.handleOnChangeType}
           isDisabled={action === ACTION_EDIT}
         />
+        {showPictureModal && (
+        <PictureModal
+          show={showPictureModal}
+          pictureUrl={pictureUrl}
+          pictureTitle={pictureTitle}
+          onClose={this.onClosePictureModal} />
+      )}
       </NormalModal>
     );
   }

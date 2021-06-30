@@ -16,6 +16,7 @@ const NormalModal = (props) => {
     children,
     isDelete = false,
     disabledBtn = false,
+    backdrop = "static",
     buttons
   } = props;
 
@@ -23,7 +24,7 @@ const NormalModal = (props) => {
     <Modal
       show={show}
       onHide={onClose}
-      backdrop="static"
+      backdrop={backdrop}
       centered={true}
       dialogClassName={`custom-modal-wrapper ${size} ${customClass}`}
     >
