@@ -1,4 +1,4 @@
-export const ACCESS_TOKEN = 'access_token';
+export const ACCESS_TOKEN = 'token';
 
 export const ACTION_ADD = 'ADD';
 export const ACTION_EDIT = 'EDIT';

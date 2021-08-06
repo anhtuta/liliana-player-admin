@@ -41,15 +41,14 @@ class App extends Component {
           <div className="app-content">
             <Switch>
               <Route exact path="/" component={Loadable.Home} />
-              <Route exact path="/song" component={Loadable.Song} />
               <Route exact path="/about" component={Loadable.About} />
               <RestrictedRoute exact path="/login" component={Loadable.Login} />
-              {/* <PrivateRoute
+              <PrivateRoute
                 exact
                 path="/song"
                 component={Loadable.Song}
                 userInfo={userInfo}
-              /> */}
+              />
               <Route path="" component={Loadable.NotFound} />
             </Switch>
           </div>

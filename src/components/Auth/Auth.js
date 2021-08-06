@@ -19,9 +19,9 @@ class Auth {
       password
     };
     axiosClient
-      .post('/signin', data)
+      .post('/auth/login', data)
       .then((res) => {
-        localStorage.setItem(ACCESS_TOKEN, res[ACCESS_TOKEN]);
+        localStorage.setItem(ACCESS_TOKEN, res.data[ACCESS_TOKEN]);
         successCallback();
       })
       .catch((err) => {
@@ -31,7 +31,7 @@ class Auth {
 
   logout = () => {
     axiosClient
-      .post('/signout')
+      .post('/auth/logout')
       .then((res) => {
         localStorage.removeItem(ACCESS_TOKEN);
         window.location = '/';
@@ -43,7 +43,7 @@ class Auth {
   };
 
   getMe = () => {
-    return axiosClient.get('/api/user/me');
+    return axiosClient.get('/auth/me');
   };
 
   redirectToLoginPage = () => {
