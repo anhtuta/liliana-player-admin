@@ -115,7 +115,7 @@ class InputFile extends PureComponent {
             {uploading && (
               <span className="uploading">
                 {/* <span className="uploading-icon"></span> */}
-                <i class="fas fa-fan fa-spin"></i> Uploading...
+                <i className="fas fa-fan fa-spin"></i> Uploading...
               </span>
             )}
             {!uploading && uploaded && uploadSuccess && (

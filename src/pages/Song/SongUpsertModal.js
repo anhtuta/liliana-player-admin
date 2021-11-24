@@ -212,7 +212,7 @@ class SongUpsertModal extends PureComponent {
         modalTitle={
           loading ? (
             <span className="uploading">
-              <i class="fas fa-fan fa-spin"></i> Wait me a second...
+              <i className="fas fa-fan fa-spin"></i> Wait me a second...
             </span>
           ) : action === ACTION_ADD ? (
             'Add new song'
