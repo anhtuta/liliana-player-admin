@@ -1,8 +1,10 @@
 .app {
-  margin: 0 20px;
   * {
     box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .app-content {
+    margin: 8px 8%;
   }
 }
 

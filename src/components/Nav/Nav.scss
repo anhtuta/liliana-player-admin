@@ -1,11 +1,13 @@
 .custom-navbar {
-  position: relative;
+  background: #333;
+  display: flex;
+  justify-content: space-between;
+  box-shadow: 3px 3px 20px 1px #888;
   .nav-wrapper {
     font-weight: bold;
     list-style: none;
     margin: 0;
     padding-left: 0;
-    background: #333;
 
     .menu-item {
       // display: inline-block;
@@ -104,10 +106,9 @@
   }
 
   .userinfo-wrapper {
-    position: absolute;
-    right: 9px;
-    top: 8px;
     color: #fff;
+    display: inline-block;
+    padding: 9px;
     .logout-link {
       cursor: pointer;
       color: #2199f9;
