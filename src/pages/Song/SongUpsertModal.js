@@ -263,6 +263,7 @@ class SongUpsertModal extends PureComponent {
             />
             <img
               src={pictureBase64 ? pictureBase64 : imageUrl ? imageUrl : musicIcon}
+              alt={`${title} (${artist})`}
               onClick={() => {
                 const url = pictureBase64 ? pictureBase64 : imageUrl;
                 if (url) {

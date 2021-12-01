@@ -15,7 +15,7 @@ const PictureModal = (props) => {
       onClose={onClose}
     >
       <div>
-        <img src={pictureUrl} />
+        <img src={pictureUrl} alt={pictureTitle} />
       </div>
     </NormalModal>
   );

@@ -46,15 +46,18 @@ class Song extends PureComponent {
                     : musicIcon
                 }
                 onClick={() => {
-                  if (original.imageUrl)
-                    this.displayPictureModal(original);
+                  if (original.imageUrl) this.displayPictureModal(original);
                 }}
-                style={{cursor: original.imageUrl ? "pointer" : "default"}}
+                style={{ cursor: original.imageUrl ? 'pointer' : 'default' }}
               />
               <div className="song-item">
                 <div className="song-title">{original.title}</div>
                 <div className="song-artist">{original.artist}</div>
                 <div className="song-album">({original.album})</div>
+                <div className="song-extra-info">
+                  <span title={`Listens: ${original.listens}`}>({original.listens}) </span>
+                  <span title={`Type: ${original.type}`}>({original.type})</span>
+                </div>
               </div>
             </div>
           );
@@ -62,12 +65,24 @@ class Song extends PureComponent {
         minWidth: 220
       },
       {
-        Header: 'Listens',
-        accessor: 'listens'
+        Header: 'Path',
+        accessor: 'path'
       },
       {
-        Header: 'Type',
-        accessor: 'type'
+        Header: 'Lyric',
+        accessor: 'lyric',
+        Cell: ({ original }) => (
+          <span
+            style={{
+              fontWeight: original.lyric && original.lyric.endsWith('.trc') ? 'bold' : '',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap'
+            }}
+            title={original.lyric}
+          >
+            {original.lyric}
+          </span>
+        )
       },
       {
         Header: 'Created date',
@@ -310,7 +325,8 @@ class Song extends PureComponent {
             show={showPictureModal}
             pictureUrl={pictureUrl}
             pictureTitle={pictureTitle}
-            onClose={this.onClosePictureModal} />
+            onClose={this.onClosePictureModal}
+          />
         )}
       </div>
     );

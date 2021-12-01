@@ -22,14 +22,12 @@
     .song-title {
       color: #323232;
       font-weight: bold;
-      font-size: 15px;
-      margin-right: 24px;
     }
     .song-artist,
-    .song-album {
+    .song-album,
+    .song-extra-info {
       color: #808080;
-      font-size: 13px;
-      margin-right: 24px;
+      font-size: 0.9em;
     }
   }
 }
