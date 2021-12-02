@@ -41,10 +41,9 @@ class Song extends PureComponent {
               <img
                 className="song-picture"
                 src={
-                  original.imageUrl
-                    ? process.env.REACT_APP_HOST_API + original.imageUrl
-                    : musicIcon
+                  original.imageUrl ? process.env.REACT_APP_HOST_API + original.imageUrl : musicIcon
                 }
+                alt=""
                 onClick={() => {
                   if (original.imageUrl) this.displayPictureModal(original);
                 }}
@@ -87,16 +86,12 @@ class Song extends PureComponent {
       {
         Header: 'Created date',
         accessor: 'created_date',
-        Cell: ({ original }) => (
-          <Moment format="HH:mm DD/MM/YYYY">{original.created_date}</Moment>
-        )
+        Cell: ({ original }) => <Moment format="HH:mm DD/MM/YYYY">{original.created_date}</Moment>
       },
       {
         Header: 'Updated date',
         accessor: 'updated_at',
-        Cell: ({ original }) => (
-          <Moment format="HH:mm DD/MM/YYYY">{original.updated_at}</Moment>
-        )
+        Cell: ({ original }) => <Moment format="HH:mm DD/MM/YYYY">{original.updated_at}</Moment>
       },
       {
         Header: 'Action',
@@ -144,9 +139,7 @@ class Song extends PureComponent {
 
   getSongs = (params) => {
     this.setState({ loading: true });
-    const sort = params.sortBy
-      ? params.sortBy + ',' + params.sortOrder
-      : this.state.params.sort;
+    const sort = params.sortBy ? params.sortBy + ',' + params.sortOrder : this.state.params.sort;
     const newParams = {
       ...this.state.params,
       ...params,
@@ -201,10 +194,9 @@ class Song extends PureComponent {
       id: original.id,
       title: original.title,
       artist: original.artist,
-      imageUrl: original.imageUrl
-        ? process.env.REACT_APP_HOST_API + original.imageUrl
-        : null,
+      imageUrl: original.imageUrl ? process.env.REACT_APP_HOST_API + original.imageUrl : null,
       album: original.album,
+      path: original.path,
       type: this.getTypeOption(original.type)
     };
     this.setState({
@@ -282,11 +274,7 @@ class Song extends PureComponent {
           <div className="width50">
             <SearchBox name="searchText" onSearch={this.onSearch} />
           </div>
-          <Button
-            text="Add new"
-            className="btn-success btn-add-new"
-            onClick={this.onAddNew}
-          />
+          <Button text="Add new" className="btn-success btn-add-new" onClick={this.onAddNew} />
         </div>
 
         <Table

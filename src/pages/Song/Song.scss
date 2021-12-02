@@ -64,6 +64,17 @@
       right: 2px;
     }
   }
+  .path-wrapper {
+    display: flex;
+    .input-wrapper {
+      width: 100%;
+      margin-right: 5px;
+    }
+    .btn-reset-path{
+      position: relative;
+      top: 29px;
+    }
+  }
 }
 
 .show-picture-modal {

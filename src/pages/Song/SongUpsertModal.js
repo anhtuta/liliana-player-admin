@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import InputText from '../../components/Input/InputText';
 import InputFile from '../../components/Input/InputFile';
 import Select from '../../components/Input/Select';
+import Button from '../../components/Button/Button';
 import NormalModal from '../../components/Modal/NormalModal';
 import { ACTION_ADD, ACTION_EDIT } from '../../constants/Constants';
 import Toast from '../../components/Toast/Toast';
@@ -12,14 +13,15 @@ import musicIcon from '../../assets/icons/music_icon.jpg';
 class SongUpsertModal extends PureComponent {
   constructor(props) {
     super(props);
-    const { id, title, artist, imageUrl, album, type } = props.selectedRow;
+    const { id, title, artist, imageUrl, album, path, type } = props.selectedRow;
     this.state = {
       id,
-      title,
-      artist,
+      title: title ? title : '',
+      artist: artist ? artist : '',
       pictureBase64: null,
       imageUrl,
-      album,
+      album: album ? album : '',
+      path: path ? path : '',
       type,
       invalid: {
         title: false
@@ -50,19 +52,10 @@ class SongUpsertModal extends PureComponent {
   };
 
   onSave = () => {
-    const {
-      id,
-      title,
-      artist,
-      pictureBase64,
-      album,
-      type,
-      file,
-      removePicture
-    } = this.state;
+    const { id, title, artist, pictureBase64, album, path, type, file, removePicture } = this.state;
     const { action } = this.props;
 
-    if (!title || !artist || !type) {
+    if (!title || !artist || !path || !type) {
       Toast.error('Please fill all required fields');
       return;
     }
@@ -72,11 +65,9 @@ class SongUpsertModal extends PureComponent {
     formData.append('title', title);
     formData.append('artist', artist);
     if (pictureBase64) {
-      formData.append(
-        'pictureBase64',
-        pictureBase64.replace('data:', '').replace(/^.+,/, '')
-      );
+      formData.append('pictureBase64', pictureBase64.replace('data:', '').replace(/^.+,/, ''));
     }
+    formData.append('path', path);
 
     // nếu album == null mà gửi cho BE thì thằng Lumen nó sẽ
     // convert thành album = 'null'
@@ -120,6 +111,7 @@ class SongUpsertModal extends PureComponent {
       () => {
         const tags = window.ID3.getAllTags(url);
         const { title, artist, album } = tags;
+        const path = this.generatePath(title, artist);
         let pictureBase64 = null;
 
         if ('picture' in tags) {
@@ -131,7 +123,7 @@ class SongUpsertModal extends PureComponent {
           pictureBase64 = 'data:' + image.format + ';base64,' + window.btoa(base64String);
         }
 
-        this.setState({ title, artist, pictureBase64, album, file });
+        this.setState({ title, artist, pictureBase64, album, path, file });
       },
       {
         tags: [
@@ -189,6 +181,20 @@ class SongUpsertModal extends PureComponent {
     });
   };
 
+  resetPath = () => {
+    const { title, artist } = this.state;
+    const path = this.generatePath(title, artist);
+    this.setState({ path });
+  };
+
+  generatePath = (title, artist) => {
+    return (title + ' ' + artist)
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/[?,]+/g, '')
+      .replace(/[-]+/g, '-');
+  };
+
   render() {
     const { showUpsertModal, onCloseUpsertModal, typeOptions, action } = this.props;
     const {
@@ -197,6 +203,7 @@ class SongUpsertModal extends PureComponent {
       pictureBase64,
       imageUrl,
       album,
+      path,
       type,
       fileName,
       loading,
@@ -289,12 +296,19 @@ class SongUpsertModal extends PureComponent {
             </div>
           </div>
         </div>
-        <InputText
-          name="album"
-          label="Album"
-          defaultValue={album}
-          onChange={this.handleOnChange}
-        />
+        <InputText name="album" label="Album" defaultValue={album} onChange={this.handleOnChange} />
+        <div className="path-wrapper">
+          <InputText
+            name="path"
+            label="Path"
+            defaultValue={path}
+            isRequire={true}
+            onChange={this.handleOnChange}
+          />
+          <div className="btn-reset-path">
+            <Button text="Default" onClick={this.resetPath} />
+          </div>
+        </div>
         <Select
           name="type"
           label="Type"
@@ -305,12 +319,13 @@ class SongUpsertModal extends PureComponent {
           isDisabled={action === ACTION_EDIT}
         />
         {showPictureModal && (
-        <PictureModal
-          show={showPictureModal}
-          pictureUrl={pictureUrl}
-          pictureTitle={pictureTitle}
-          onClose={this.onClosePictureModal} />
-      )}
+          <PictureModal
+            show={showPictureModal}
+            pictureUrl={pictureUrl}
+            pictureTitle={pictureTitle}
+            onClose={this.onClosePictureModal}
+          />
+        )}
       </NormalModal>
     );
   }
