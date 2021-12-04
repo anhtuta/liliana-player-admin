@@ -69,6 +69,7 @@ class InputFile extends PureComponent {
       disabled,
       types,
       label,
+      className = '',
       placeHolder,
       isRequire = false,
       uploading,
@@ -78,7 +79,7 @@ class InputFile extends PureComponent {
     } = this.props;
 
     return (
-      <div className="input-wrapper">
+      <div className={`input-wrapper ${className}`}>
         {label && (
           <label className="input-label">
             {label}

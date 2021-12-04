@@ -21,9 +21,7 @@ class InputText extends PureComponent {
 
   onChange = (e) => {
     const { value } = e.target;
-    const maxLength = this.props.maxLength
-      ? this.props.maxLength
-      : DEFAULT_INPUT_MAX_LENGTH;
+    const maxLength = this.props.maxLength ? this.props.maxLength : DEFAULT_INPUT_MAX_LENGTH;
     let errorMsg = '';
 
     if (value.length > maxLength) {
@@ -61,6 +59,7 @@ class InputText extends PureComponent {
     const {
       name,
       label,
+      className = '',
       disabled = false,
       isRequire = false,
       type = 'text',
@@ -70,7 +69,7 @@ class InputText extends PureComponent {
     const { value, errorMsg } = this.state;
 
     return (
-      <div className="input-wrapper">
+      <div className={`input-wrapper ${className}`}>
         {label && (
           <label className="input-label">
             {label}

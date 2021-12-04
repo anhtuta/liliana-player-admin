@@ -5,6 +5,7 @@ const Select = (props) => {
   const {
     name,
     label,
+    className = '',
     placeholder,
     options,
     defaultOption,
@@ -29,7 +30,7 @@ const Select = (props) => {
   };
 
   return (
-    <div className="input-wrapper select-wrapper">
+    <div className={`input-wrapper select-wrapper ${className}`}>
       <label className="input-label">
         {label}
         {isRequire && <span className="input-require">&nbsp;*</span>}
