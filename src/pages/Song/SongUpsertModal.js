@@ -9,6 +9,7 @@ import Toast from '../../components/Toast/Toast';
 import PictureModal from './PictureModal';
 import SongService from './SongService';
 import musicIcon from '../../assets/icons/music_icon.jpg';
+import './SongUpsertModal.scss';
 
 class SongUpsertModal extends PureComponent {
   constructor(props) {

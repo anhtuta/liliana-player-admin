@@ -1,5 +1,6 @@
 import React from 'react';
 import NormalModal from '../../components/Modal/NormalModal';
+import './PictureModal.scss';
 
 const PictureModal = (props) => {
   const { show, pictureUrl, pictureTitle, onClose } = props;

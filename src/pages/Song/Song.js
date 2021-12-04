@@ -3,14 +3,14 @@ import Moment from 'react-moment';
 import Table from '../../components/Table/Table';
 import SearchBox from '../../components/Input/SearchBox';
 import Button from '../../components/Button/Button';
-import { ACTION_ADD, ACTION_EDIT } from '../../constants/Constants';
+import { ACTION_ADD, ACTION_EDIT, NO_LYRIC } from '../../constants/Constants';
 import SongUpsertModal from './SongUpsertModal';
 import PictureModal from './PictureModal';
 import Toast from '../../components/Toast/Toast';
 import ConfirmModal from '../../components/Modal/ConfirmModal';
 import SongService from './SongService';
-import './Song.scss';
 import musicIcon from '../../assets/icons/music_icon.jpg';
+import './Song.scss';
 
 class Song extends PureComponent {
   constructor(props) {
@@ -74,12 +74,11 @@ class Song extends PureComponent {
           <span
             style={{
               fontWeight: original.lyric && original.lyric.endsWith('.trc') ? 'bold' : '',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap'
+              cursor: 'pointer'
             }}
             title={original.lyric}
           >
-            {original.lyric}
+            {original.lyric ? original.lyric : NO_LYRIC}
           </span>
         )
       },
