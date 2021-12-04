@@ -66,7 +66,7 @@ class InputFile extends PureComponent {
   render() {
     const { fileName, isDragging } = this.state;
     const {
-      disabled,
+      disabled = false,
       types,
       label,
       className = '',
@@ -100,36 +100,38 @@ class InputFile extends PureComponent {
             ref={this.dropArea}
             title={fileName ? fileName : ''}
           >
-            {fileName ? fileName : placeHolder ? placeHolder : 'Drag a file here...'}
+            {fileName ? fileName : placeHolder ? placeHolder : 'Drag a file here'}
+            <span
+              className={`input-file-browse ${disabled ? 'browser-disabled' : ''}`}
+              disabled={disabled}
+              onClick={() => {
+                if (!disabled || !disabled === true) this.inputFile.click();
+              }}
+              title="Browse files"
+            >
+              <i className="fas fa-cloud-upload-alt"></i>
+            </span>
           </div>
-          <span
-            className="input-file-browse"
-            disabled={disabled}
-            onClick={() => {
-              this.inputFile.click();
-            }}
-            title=""
-          >
-            <i className="far fa-file"></i> Browse
-          </span>
-          <span className="input-file-status">
-            {uploading && (
-              <span className="uploading">
-                {/* <span className="uploading-icon"></span> */}
-                <i className="fas fa-fan fa-spin"></i> Uploading...
-              </span>
-            )}
-            {!uploading && uploaded && uploadSuccess && (
-              <span className="upload-success">
-                <i className="far fa-check-circle"></i> Succeeced
-              </span>
-            )}
-            {!uploading && uploaded && !uploadSuccess && (
-              <span className="upload-fail">
-                <i className="far fa-times-circle"></i> Failed
-              </span>
-            )}
-          </span>
+          {(uploading || uploaded) && (
+            <span className="input-file-status">
+              {uploading && (
+                <span className="uploading" title="Uploading...">
+                  {/* <span className="uploading-icon"></span> */}
+                  <i className="fas fa-fan fa-spin"></i> Uploading...
+                </span>
+              )}
+              {!uploading && uploaded && uploadSuccess && (
+                <span className="upload-success" title="Upload succeeded!">
+                  <i className="far fa-check-circle"></i> Succeeded
+                </span>
+              )}
+              {!uploading && uploaded && !uploadSuccess && (
+                <span className="upload-fail" title="Upload Failed!!!">
+                  <i className="far fa-times-circle"></i> Failed
+                </span>
+              )}
+            </span>
+          )}
         </div>
       </div>
     );
