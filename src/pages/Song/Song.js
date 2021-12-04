@@ -196,7 +196,8 @@ class Song extends PureComponent {
       imageUrl: original.imageUrl ? process.env.REACT_APP_HOST_API + original.imageUrl : null,
       album: original.album,
       path: original.path,
-      type: this.getTypeOption(original.type)
+      type: this.getTypeOption(original.type),
+      lyric: original.lyric
     };
     this.setState({
       action: ACTION_EDIT,

@@ -30,15 +30,39 @@
       right: 2px;
     }
   }
-  .path-wrapper {
+  .album-path {
     display: flex;
-    .input-wrapper {
-      width: 100%;
-      margin-right: 5px;
+    justify-content: space-between;
+    .input-album {
+      width: 48%;
     }
-    .btn-reset-path {
-      position: relative;
-      top: 29px;
+    .path-wrapper {
+      width: 48%;
+      display: flex;
+      .input-path {
+        width: 100%;
+        margin-right: 5px;
+      }
+      .btn-reset-path {
+        position: relative;
+        top: 29px;
+      }
+    }
+  }
+  .type-lyric {
+    display: flex;
+    justify-content: space-between;
+    .input-lyric {
+      width: 48%;
+    }
+    .select-type {
+      width: 48%;
+    }
+    .download-lyric {
+      width: 48%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
   }
 }

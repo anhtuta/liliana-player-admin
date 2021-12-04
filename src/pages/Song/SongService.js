@@ -22,12 +22,17 @@ const getAllTypes = (params) => {
   return axiosClient.get('/api/song/type/all', { params });
 };
 
+const uploadLyric = (data) => {
+  return axiosClient.post('/api/lyric/upload', data);
+};
+
 const SongService = {
   getSongs,
   createSong,
   updateSong,
   deleteSong,
-  getAllTypes
+  getAllTypes,
+  uploadLyric
 };
 
 export default SongService;

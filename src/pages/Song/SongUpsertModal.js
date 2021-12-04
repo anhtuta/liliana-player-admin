@@ -2,9 +2,10 @@ import React, { PureComponent } from 'react';
 import InputText from '../../components/Input/InputText';
 import InputFile from '../../components/Input/InputFile';
 import Select from '../../components/Input/Select';
+import BoxInfo from '../../components/Input/BoxInfo';
 import Button from '../../components/Button/Button';
 import NormalModal from '../../components/Modal/NormalModal';
-import { ACTION_ADD, ACTION_EDIT } from '../../constants/Constants';
+import { ACTION_ADD, ACTION_EDIT, NO_LYRIC } from '../../constants/Constants';
 import Toast from '../../components/Toast/Toast';
 import PictureModal from './PictureModal';
 import SongService from './SongService';
@@ -14,7 +15,7 @@ import './SongUpsertModal.scss';
 class SongUpsertModal extends PureComponent {
   constructor(props) {
     super(props);
-    const { id, title, artist, imageUrl, album, path, type } = props.selectedRow;
+    const { id, title, artist, imageUrl, album, path, type, lyric } = props.selectedRow;
     this.state = {
       id,
       title: title ? title : '',
@@ -24,14 +25,19 @@ class SongUpsertModal extends PureComponent {
       album: album ? album : '',
       path: path ? path : '',
       type,
+      lyric,
       invalid: {
         title: false
       },
       file: null,
       fileName: '',
+      lyricFileName: '',
       loading: false,
+      uploadingMp3: false,
+      uploadingLyric: false,
       removePicture: 0,
       showPictureModal: false,
+      showUploadLyric: !lyric,
       pictureUrl: null,
       pictureTitle: null
     };
@@ -52,8 +58,16 @@ class SongUpsertModal extends PureComponent {
     });
   };
 
+  /**
+   * Send song to BE.
+   * Note: nếu field nào đó, chẳng hạn album == null mà gửi cho BE
+   * thì thằng Lumen nó sẽ convert thành album = 'null'.
+   * Do đó những field ko require thì phải check nếu khác null mới gửi vào request body
+   * @returns
+   */
   onSave = () => {
-    const { id, title, artist, pictureBase64, album, path, type, file, removePicture } = this.state;
+    const { id, title, artist, pictureBase64, album, path, type, lyric, file, removePicture } =
+      this.state;
     const { action } = this.props;
 
     if (!title || !artist || !path || !type) {
@@ -70,23 +84,23 @@ class SongUpsertModal extends PureComponent {
     }
     formData.append('path', path);
 
-    // nếu album == null mà gửi cho BE thì thằng Lumen nó sẽ
-    // convert thành album = 'null'
     if (album) formData.append('album', album);
+    if (lyric) formData.append('lyric', lyric);
 
     if (action === ACTION_ADD) {
+      this.setState({ uploadingMp3: true });
       formData.append('type', type.value);
       formData.append('file', file);
       SongService.createSong(formData)
         .then((res) => {
           Toast.success(res.message);
-          this.setState({ loading: false });
+          this.setState({ loading: false, uploadingMp3: false });
           this.props.onSave();
         })
         .catch((err) => {
           console.log(err);
           Toast.error(err);
-          this.setState({ loading: false });
+          this.setState({ loading: false, uploadingMp3: false });
         });
     } else {
       formData.append('removePicture', removePicture);
@@ -141,6 +155,28 @@ class SongUpsertModal extends PureComponent {
         dataReader: window.FileAPIReader(file)
       }
     );
+  };
+
+  lyricFileTypes = ['.lrc', '.trc'];
+  uploadLyric = (file) => {
+    this.setState({ loading: true, uploadingLyric: true });
+    let formData = new FormData();
+    formData.append('file', file);
+    SongService.uploadLyric(formData)
+      .then((res) => {
+        Toast.success(res.message);
+        this.setState({
+          loading: false,
+          uploadingLyric: false,
+          // showUploadLyric: false,
+          lyric: file.name
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        Toast.error(err);
+        this.setState({ loading: false, uploadingLyric: true });
+      });
   };
 
   changePicture = (e) => {
@@ -206,9 +242,14 @@ class SongUpsertModal extends PureComponent {
       album,
       path,
       type,
+      lyric,
       fileName,
+      lyricFileName,
       loading,
+      uploadingMp3,
+      uploadingLyric,
       showPictureModal,
+      showUploadLyric,
       pictureUrl,
       pictureTitle
     } = this.state;
@@ -242,6 +283,7 @@ class SongUpsertModal extends PureComponent {
             label="Please upload a mp3 file..."
             isRequire={true}
             fileName={fileName}
+            uploading={uploadingMp3}
           />
         )}
         <div className="title-artist-picture">
@@ -297,28 +339,72 @@ class SongUpsertModal extends PureComponent {
             </div>
           </div>
         </div>
-        <InputText name="album" label="Album" defaultValue={album} onChange={this.handleOnChange} />
-        <div className="path-wrapper">
+        <div className="album-path">
           <InputText
-            name="path"
-            label="Path"
-            defaultValue={path}
-            isRequire={true}
+            name="album"
+            label="Album"
+            className="input-album"
+            defaultValue={album}
             onChange={this.handleOnChange}
           />
-          <div className="btn-reset-path">
-            <Button text="Default" onClick={this.resetPath} />
+          <div className="path-wrapper">
+            <InputText
+              name="path"
+              label="Path"
+              className="input-path"
+              defaultValue={path}
+              isRequire={true}
+              onChange={this.handleOnChange}
+            />
+            <div className="btn-reset-path">
+              <Button text="Default" onClick={this.resetPath} />
+            </div>
           </div>
         </div>
-        <Select
-          name="type"
-          label="Type"
-          defaultOption={type}
-          options={typeOptions}
-          isRequire={true}
-          onChange={this.handleOnChangeType}
-          isDisabled={action === ACTION_EDIT}
-        />
+        <div className="type-lyric">
+          <Select
+            name="type"
+            label="Type"
+            className="select-type"
+            defaultOption={type}
+            options={typeOptions}
+            isRequire={true}
+            onChange={this.handleOnChangeType}
+            isDisabled={action === ACTION_EDIT}
+          />
+          {showUploadLyric && (
+            <InputFile
+              onChange={this.uploadLyric}
+              types={this.lyricFileTypes}
+              label={NO_LYRIC}
+              className="input-lyric"
+              fileName={lyricFileName}
+              uploading={uploadingLyric}
+            />
+          )}
+          {!showUploadLyric && (
+            <div className="download-lyric">
+              <BoxInfo label="Lyric">
+                {lyric ? (
+                  <a
+                    target="_blank"
+                    href={process.env.REACT_APP_HOST_API + '/api/lyric/download?file=' + lyric}
+                  >
+                    {lyric}
+                  </a>
+                ) : (
+                  NO_LYRIC
+                )}
+              </BoxInfo>
+              <i
+                className="fas fa-upload icon-btn-action icon-btn-edit"
+                onClick={() => this.setState({ showUploadLyric: true })}
+                title="Upload new lyric"
+              ></i>
+            </div>
+          )}
+        </div>
+
         {showPictureModal && (
           <PictureModal
             show={showPictureModal}
