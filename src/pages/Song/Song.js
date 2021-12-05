@@ -73,8 +73,7 @@ class Song extends PureComponent {
         Cell: ({ original }) => (
           <span
             style={{
-              fontWeight: original.lyric && original.lyric.endsWith('.trc') ? 'bold' : '',
-              cursor: 'pointer'
+              fontWeight: original.lyric && original.lyric.endsWith('.trc') ? 'bold' : ''
             }}
             title={original.lyric}
           >
