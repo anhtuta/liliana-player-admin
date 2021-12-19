@@ -388,6 +388,7 @@ class SongUpsertModal extends PureComponent {
                 {lyric ? (
                   <a
                     target="_blank"
+                    rel="noopener noreferrer"
                     href={process.env.REACT_APP_HOST_API + '/api/lyric/download?file=' + lyric}
                   >
                     {lyric}

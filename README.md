@@ -1,3 +1,7 @@
+## Note
+
+This is my code base, includes all of my latest updated common components
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
