@@ -1,0 +1,49 @@
+# This code is licensed from CircleCI to the user under the MIT license.
+# See here for details: https://circleci.com/developer/orbs/licensing
+version: 2.1
+jobs:
+  build_prd:
+    docker:
+      - image: circleci/node:latest
+    working_directory: ~/lladmin
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - lladmin-dependencies-{{ checksum "package.json" }}
+            - lladmin-dependencies- # fallback to using the latest cache if no exact match is found
+      # - run:
+      #     name: Prepare for testing
+      #     command: |
+      #       npm install --save-dev @testing-library/react
+      # - run:
+      #     name: Run unit-tests
+      #     command: |
+      #       npm run test a
+      - run:
+          name: Install dependencies
+          command: | 
+            cd ~/lladmin
+            yarn install
+      - save_cache:
+          paths:
+            - node_modules
+          key: lladmin-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Build
+          command: yarn build:prd
+      - run:
+          name: Compress Artifacts
+          command: tar -cvzf lladmin.tar.gz build  # Nếu chỉ dùng -cvf thì nó chỉ đóng gói chứ ko nén. Dùng thêm -z sẽ nén (gzip), kích thước file giảm xuống đáng kể! Dùng .tgz hay .tar.gz đều được
+      - store_artifacts:
+          path: lladmin.tar.gz
+
+workflows:
+  version: 2
+  lladmin-workflow:
+    jobs:
+      - build_prd:
+          filters:  # using regex filters requires the entire branch to match
+            branches:
+              only:  # only branches matching the below regex filters will run
+                - master
