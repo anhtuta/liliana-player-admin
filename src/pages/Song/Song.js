@@ -98,11 +98,13 @@ class Song extends PureComponent {
             <i
               className="fas fa-edit icon-btn-action icon-btn-edit"
               onClick={() => this.onUpdate(original)}
+              title='Edit'
             ></i>
             &nbsp;
             <i
               className="fas fa-trash-alt icon-btn-action icon-btn-delete"
               onClick={() => this.onDelete(original)}
+              title='Delete'
             ></i>
           </div>
         ),

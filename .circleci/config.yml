@@ -4,7 +4,7 @@ version: 2.1
 jobs:
   build_prd:
     docker:
-      - image: circleci/node:latest
+      - image: circleci/node:16.12.0
     working_directory: ~/lladmin
     steps:
       - checkout
@@ -22,7 +22,7 @@ jobs:
       #       npm run test a
       - run:
           name: Install dependencies
-          command: | 
+          command: |
             cd ~/lladmin
             yarn install
       - save_cache:
@@ -34,7 +34,7 @@ jobs:
           command: yarn build:prd
       - run:
           name: Compress Artifacts
-          command: tar -cvzf lladmin.tar.gz build  # Nếu chỉ dùng -cvf thì nó chỉ đóng gói chứ ko nén. Dùng thêm -z sẽ nén (gzip), kích thước file giảm xuống đáng kể! Dùng .tgz hay .tar.gz đều được
+          command: tar -cvzf lladmin.tar.gz build # Nếu chỉ dùng -cvf thì nó chỉ đóng gói chứ ko nén. Dùng thêm -z sẽ nén (gzip), kích thước file giảm xuống đáng kể! Dùng .tgz hay .tar.gz đều được
       - store_artifacts:
           path: lladmin.tar.gz
 
@@ -43,7 +43,7 @@ workflows:
   lladmin-workflow:
     jobs:
       - build_prd:
-          filters:  # using regex filters requires the entire branch to match
+          filters: # using regex filters requires the entire branch to match
             branches:
-              only:  # only branches matching the below regex filters will run
+              only: # only branches matching the below regex filters will run
                 - master
