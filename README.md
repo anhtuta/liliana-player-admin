@@ -1,6 +1,16 @@
 ## Note
 
-This is my code base, includes all of my latest updated common components
+This is my code base, includes all of my latest updated common components!
+
+Các components sau thường sẽ dùng chung cho nhiều project, và nếu update chúng ở project khác, thì sẽ cần update ở cả project này nữa:
+- src\components\Auth (Sửa API endpoint và 1 vài chỗ nhỏ khác)
+- src\components\Button
+- src\components\Input
+- src\components\Loadable (Cần sửa các page import trong Loadable)
+- src\components\Modal
+- src\components\Table
+- src\components\Toast
+- .prettierrc
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
