@@ -109,7 +109,7 @@ class InputFile extends PureComponent {
               }}
               title="Browse files"
             >
-              <i className="fas fa-cloud-upload-alt"></i>
+              <i className="fa fa-upload"></i>
             </span>
           </div>
           {(uploading || uploaded) && (
@@ -117,17 +117,17 @@ class InputFile extends PureComponent {
               {uploading && (
                 <span className="uploading" title="Uploading...">
                   {/* <span className="uploading-icon"></span> */}
-                  <i className="fas fa-fan fa-spin"></i> Uploading...
+                  <i className="fa fa-spinner fa-spin"></i> Uploading...
                 </span>
               )}
               {!uploading && uploaded && uploadSuccess && (
                 <span className="upload-success" title="Upload succeeded!">
-                  <i className="far fa-check-circle"></i> Succeeded
+                  <i className="fa fa-check-circle"></i> Succeeded
                 </span>
               )}
               {!uploading && uploaded && !uploadSuccess && (
                 <span className="upload-fail" title="Upload Failed!!!">
-                  <i className="far fa-times-circle"></i> Failed
+                  <i className="fa fa-times-circle"></i> Failed
                 </span>
               )}
             </span>
