@@ -261,7 +261,7 @@ class SongUpsertModal extends PureComponent {
         modalTitle={
           loading ? (
             <span className="uploading">
-              <i className="fas fa-fan fa-spin"></i> Wait me a second...
+              <i className="fa fa-spinner fa-spin"></i> Wait me a second...
             </span>
           ) : action === ACTION_ADD ? (
             'Add new song'
@@ -324,14 +324,14 @@ class SongUpsertModal extends PureComponent {
             />
             <div className="btn-wrapper">
               <i
-                className="fas fa-edit icon-btn-action icon-btn-edit"
+                className="fa fa-pencil-square icon-btn-action icon-btn-edit"
                 onClick={() => this.inputPicture.click()}
                 title="Change picture"
               ></i>
               &nbsp;
               {(pictureBase64 || imageUrl) && (
                 <i
-                  className="fas fa-trash-alt icon-btn-action icon-btn-delete"
+                  className="fa fa-trash icon-btn-action icon-btn-delete"
                   onClick={this.resetPicture}
                   title="Delete picture"
                 ></i>
@@ -398,7 +398,7 @@ class SongUpsertModal extends PureComponent {
                 )}
               </BoxInfo>
               <i
-                className="fas fa-upload icon-btn-action icon-btn-edit"
+                className="fa fa-upload icon-btn-action icon-btn-edit"
                 onClick={() => this.setState({ showUploadLyric: true })}
                 title="Upload new lyric"
               ></i>
