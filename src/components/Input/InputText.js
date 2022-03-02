@@ -63,6 +63,7 @@ class InputText extends PureComponent {
       disabled = false,
       isRequire = false,
       type = 'text',
+      maxLength = '',
       placeholder
     } = this.props;
 
@@ -71,13 +72,14 @@ class InputText extends PureComponent {
     return (
       <div className={`input-wrapper ${className}`}>
         {label && (
-          <label className="input-label">
+          <label className="input-label" htmlFor={`id-txt-${name}`}>
             {label}
             {isRequire && <span className="input-require">&nbsp;*</span>}
           </label>
         )}
         <div className="input-text-wrapper">
           <input
+            id={`id-txt-${name}`}
             type={type}
             name={name}
             value={value}
@@ -86,6 +88,7 @@ class InputText extends PureComponent {
             className={'input-text' + (!!errorMsg ? ' input-error' : '')}
             placeholder={placeholder}
             onKeyPress={this.onKeyPress}
+            maxLength={maxLength}
           />
           {!!errorMsg && <div className="input-error-msg">{errorMsg}</div>}
         </div>
