@@ -1,114 +1,87 @@
+@import '../../scss/style-variables.scss';
+
 .custom-navbar {
-  background: #333;
-  display: flex;
-  justify-content: space-between;
-  box-shadow: 3px 3px 20px 1px #888;
+  position: relative;
+
   .nav-wrapper {
     font-weight: bold;
     list-style: none;
     margin: 0;
     padding-left: 0;
+    background: $primary-color;
+    padding: 0 $body-padding-lr;
+
+    ul {
+      list-style: none;
+    }
 
     .menu-item {
-      // display: inline-block;
       padding: 0;
+      text-align: left;
+      background: $primary-color;
+      transition: 0.3s;
       a {
-        display: block;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         color: #2199f9;
         text-decoration: none;
-        transition: 0.3s;
         padding: 9px;
-        &:hover {
-          color: #fff;
-          background: #2199f9;
+      }
+      &:hover {
+        background: #fff; // $primary-color-1;
+        & > a {
+          color: #2199f9; //$secondary-color1;
         }
       }
     }
 
     .active-menu {
-      background: #2199f9;
-      transition: 0.3s;
-      a {
-        color: #fff;
-      }
+      background: $primary-color-2;
     }
 
     .menu-parent {
-      color: #2199f9;
       cursor: pointer;
       position: relative;
-
-      .sub-menu {
-        // display: none;
+      & > .sub-menu {
+        display: none;
         box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
         position: absolute;
         z-index: 9999;
-        background: #333333;
+        background: #333333; // $primary-color;
         text-transform: none;
         margin: 0;
         padding-left: 0;
-
-        .menu-item {
-          // display: block;
-        }
+        // Từ thằng con level3 trở đi, phải ở bên phải cha nó (còn level2 xem style ở dưới)
+        left: 100%;
+        top: 0;
+        width: 123px;
       }
-      // &:hover .sub-menu {
-      //   display: block;
-      //   min-width: 112px;
-      // }
+      &:hover > .sub-menu {
+        display: block;
+        min-width: 112px;
+      }
     }
 
-    li {
+    .level1 {
       display: inline-block;
-    }
-
-    // Menu có bao nhiêu level thì khai báo hết ở đây
-    .level2,
-    .level3,
-    .level4,
-    .level5 {
-      display: none;
-    }
-
-    // Tương tự: menu có bao nhiêu level thì khai báo hover hết ở đây
-    .level1:hover .level2 {
-      display: block;
-    }
-    .level2:hover .level3 {
-      display: block;
-    }
-    .level3:hover .level4 {
-      display: block;
-    }
-    .level4:hover .level5 {
-      display: block;
-    }
-
-    // Riêng thằng level2 thì CSS như ở dưới, vì nó phải ở dưới thằng level1
-    ul.level2 {
-      left: 0;
-      top: 100%;
-      width: 123px;
-    }
-
-    // Từ thằng con level3 trở đi, phải ở bên phải cha nó
-    ul.level3,
-    ul.level4,
-    ul.level5 {
-      left: 100%;
-      top: 0;
-      width: 123px;
+      // Riêng thằng con level2 thì phải ở dưới cha nó (level1)
+      & > .sub-menu {
+        left: 0;
+        top: 100%;
+        width: 123px;
+      }
     }
 
     .caret {
-      margin-left: 5px;
+      margin-left: 2px;
     }
   }
-
   .userinfo-wrapper {
+    position: absolute;
+    right: 9px;
+    top: 8px;
     color: #fff;
-    display: inline-block;
-    padding: 9px;
     .logout-link {
       cursor: pointer;
       color: #2199f9;

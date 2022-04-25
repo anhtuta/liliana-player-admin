@@ -31,19 +31,15 @@ class Nav extends Component {
 
       if (item.subItems) {
         return (
-          <li key={item.key} className={itemClass + ' menu-parent level' + item.level}>
+          <li key={item.key} className={`${itemClass} menu-parent level${item.level}`}>
             <Link to={item.path}>
-              {item.name}{' '}
+              {item.name}&nbsp;
               <i
-                className={
-                  'caret fas ' + (item.level > 1 ? 'fa-caret-right' : 'fa-caret-down')
-                }
+                className={'caret fa ' + (item.level > 1 ? 'fa-caret-right' : 'fa-caret-down')}
+                onClick={(e) => e.preventDefault()}
               ></i>
             </Link>
-            <ul
-              key={item.key}
-              className={itemClass + ' sub-menu level' + (item.level + 1)}
-            >
+            <ul key={item.key} className={itemClass + ' sub-menu level' + (item.level + 1)}>
               {this.generateMenu(item.subItems)}
             </ul>
           </li>
@@ -51,7 +47,11 @@ class Nav extends Component {
       } else {
         return (
           item.enabled && (
-            <li key={item.key} className={itemClass + ' level' + item.level}>
+            <li
+              key={item.key}
+              className={`${itemClass} level${item.level} ${item.className ? item.className : ''}`}
+              title={item.title ? item.title : ''}
+            >
               <Link to={item.path}>{item.name}</Link>
             </li>
           )
