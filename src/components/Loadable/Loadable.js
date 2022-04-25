@@ -16,7 +16,7 @@ const Loading = (props) => {
       </div>
     );
   } else if (props.pastDelay) {
-    return <LoadingIcon />;
+    return <LoadingIcon show={true} />;
   } else {
     return null;
   }
