@@ -8,7 +8,7 @@ const Select = (props) => {
     className = '',
     placeholder,
     options,
-    defaultOption,
+    defaultValue,
     isDisabled = false,
     isRequire = false,
     isMulti = false,
@@ -22,11 +22,18 @@ const Select = (props) => {
   };
 
   const onChange = (selected) => {
-    props.onChange({
-      name,
-      label: selected.label,
-      value: selected.value
-    });
+    if (isMulti) {
+      props.onChange({
+        name,
+        selected
+      });
+    } else {
+      props.onChange({
+        name,
+        label: selected.label,
+        value: selected.value
+      });
+    }
   };
 
   return (
@@ -39,7 +46,7 @@ const Select = (props) => {
         name={name}
         placeholder={placeholder}
         options={allowSelectAll ? [ALL_OPTION, ...options] : options}
-        defaultValue={defaultOption}
+        defaultValue={defaultValue}
         onChange={onChange}
         isDisabled={isDisabled}
         isMulti={isMulti}

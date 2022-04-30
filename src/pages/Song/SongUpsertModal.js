@@ -366,7 +366,7 @@ class SongUpsertModal extends PureComponent {
             name="type"
             label="Type"
             className="select-type"
-            defaultOption={type}
+            defaultValue={type}
             options={typeOptions}
             isRequire={true}
             onChange={this.handleOnChangeType}

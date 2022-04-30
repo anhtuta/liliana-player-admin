@@ -36,9 +36,10 @@ const RadioGroup = (props) => {
         </label>
       )}
       {options.length > 0 &&
-        options.map((op) => {
+        options.map((op, index) => {
           return (
             <RadioButton
+              key={index}
               label={op.label}
               name={name}
               value={op.value}
