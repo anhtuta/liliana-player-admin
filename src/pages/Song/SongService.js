@@ -4,6 +4,10 @@ const getSongs = (params) => {
   return axiosClient.get('/api/song', { params });
 };
 
+const searchZingSong = (text) => {
+  return axiosClient.get('/api/zing/mp3/search/song', { params: { q: text } });
+};
+
 const createSong = (data) => {
   return axiosClient.post('/api/song', data);
 };
@@ -28,6 +32,7 @@ const uploadLyric = (data) => {
 
 const SongService = {
   getSongs,
+  searchZingSong,
   createSong,
   updateSong,
   deleteSong,

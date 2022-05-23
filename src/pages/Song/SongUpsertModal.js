@@ -1,7 +1,10 @@
 import React, { PureComponent } from 'react';
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
 import InputText from '../../components/Input/InputText';
 import InputFile from '../../components/Input/InputFile';
 import Select from '../../components/Input/Select';
+import SelectAsync from '../../components/Input/SelectAsync';
 import BoxInfo from '../../components/Input/BoxInfo';
 import Button from '../../components/Button/Button';
 import NormalModal from '../../components/Modal/NormalModal';
@@ -11,12 +14,17 @@ import PictureModal from './PictureModal';
 import SongService from './SongService';
 import musicIcon from '../../assets/icons/music_icon.jpg';
 import './SongUpsertModal.scss';
+import SongZingItem from './SongZingItem';
+
+const TAB_UPLOAD_FILE = 'TAB_UPLOAD_FILE';
+const TAB_ZING_MP3 = 'TAB_ZING_MP3';
 
 class SongUpsertModal extends PureComponent {
   constructor(props) {
     super(props);
     const { id, title, artist, imageUrl, album, path, type, lyric } = props.selectedRow;
     this.state = {
+      tabKey: TAB_UPLOAD_FILE,
       id,
       title: title ? title : '',
       artist: artist ? artist : '',
@@ -56,6 +64,14 @@ class SongUpsertModal extends PureComponent {
     this.setState({
       type: { label: obj.label, value: obj.value }
     });
+  };
+
+  handleOnChangeTab = (tabKey = '') => {
+    this.setState({ tabKey: tabKey });
+  };
+
+  selectZingSong = ({ name = '', selected = {} }) => {
+    console.log('selectZingSong', name, selected);
   };
 
   /**
@@ -232,9 +248,36 @@ class SongUpsertModal extends PureComponent {
       .replace(/[-]+/g, '-');
   };
 
+  /**
+   * @param {string} searchText
+   * @returns Promise, và data của Promise này sẽ là 1 array các option dùng cho <Select />
+   */
+  fetchZingSong = async (searchText) => {
+    const res = await SongService.searchZingSong(searchText);
+    return res.data.data.items;
+  };
+
+  /**
+   * obj chính là 1 phần tử của mảng options mà method fetchZingSong trả về
+   * @param {object} obj
+   */
+  getOptionLabel = (obj) => {
+    const { title, artistsNames, thumbnailM } = obj;
+    return <SongZingItem title={title} artistsNames={artistsNames} thumbnailM={thumbnailM} />;
+  };
+
+  /**
+   * obj chính là 1 phần tử của mảng options mà method fetchZingSong trả về
+   * @param {object} obj
+   */
+  getOptionValue = (obj) => {
+    return obj.encodeId;
+  };
+
   render() {
     const { showUpsertModal, onCloseUpsertModal, typeOptions, action } = this.props;
     const {
+      tabKey,
       title,
       artist,
       pictureBase64,
@@ -253,6 +296,13 @@ class SongUpsertModal extends PureComponent {
       pictureUrl,
       pictureTitle
     } = this.state;
+    const modalTitle = action === ACTION_ADD ? 'Add new song' : 'Update song';
+    const customItemStyles = {
+      control: (base) => ({
+        ...base,
+        minHeight: 52
+      })
+    };
 
     return (
       <NormalModal
@@ -263,10 +313,8 @@ class SongUpsertModal extends PureComponent {
             <span className="uploading">
               <i className="fa fa-spinner fa-spin"></i> Wait me a second...
             </span>
-          ) : action === ACTION_ADD ? (
-            'Add new song'
           ) : (
-            'Update song'
+            modalTitle
           )
         }
         saveButtonText="Save"
@@ -277,14 +325,31 @@ class SongUpsertModal extends PureComponent {
         disabledBtn={loading}
       >
         {action === ACTION_ADD && (
-          <InputFile
-            onChange={this.loadMetadata}
-            types={this.fileTypes}
-            label="Please upload a mp3 file..."
-            isRequire={true}
-            fileName={fileName}
-            uploading={uploadingMp3}
-          />
+          <Tabs id="tab-add-song-type" activeKey={tabKey} onSelect={this.handleOnChangeTab}>
+            <Tab eventKey={TAB_UPLOAD_FILE} title="Upload file" tabClassName="tab-upload-file">
+              <InputFile
+                onChange={this.loadMetadata}
+                types={this.fileTypes}
+                label="Please upload a mp3 file..."
+                isRequire={true}
+                fileName={fileName}
+                uploading={uploadingMp3}
+              />
+            </Tab>
+            <Tab eventKey={TAB_ZING_MP3} title="Zing Mp3" tabClassName="tab-zing-mp3">
+              <SelectAsync
+                name="selectZingSong"
+                label="Select a song from Zing Mp3"
+                placeholder="Search song"
+                isRequire={true}
+                onChange={this.selectZingSong}
+                loadOptions={this.fetchZingSong}
+                getOptionLabel={this.getOptionLabel}
+                getOptionValue={this.getOptionValue}
+                styles={customItemStyles}
+              />
+            </Tab>
+          </Tabs>
         )}
         <div className="title-artist-picture">
           <div className="title-artist">

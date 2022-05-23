@@ -1,0 +1,24 @@
+.song-zing-item {
+  .td-song-info {
+    display: flex;
+    flex-direction: row;
+
+    .song-picture {
+      width: 34px;
+      height: 34px;
+      float: left;
+      margin-right: 5px;
+      border-radius: 3px;
+    }
+    .song-title {
+      color: #323232;
+      font-weight: bold;
+    }
+    .song-artist,
+    .song-album,
+    .song-extra-info {
+      color: #808080;
+      font-size: 0.9em;
+    }
+  }
+}
