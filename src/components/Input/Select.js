@@ -25,7 +25,7 @@ const Select = (props) => {
     if (isMulti) {
       props.onChange({
         name,
-        selected
+        selected // an array of selected object
       });
     } else {
       props.onChange({
