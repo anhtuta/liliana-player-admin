@@ -12,9 +12,10 @@ import { ACTION_ADD, ACTION_EDIT, NO_LYRIC } from '../../constants/Constants';
 import Toast from '../../components/Toast/Toast';
 import PictureModal from './PictureModal';
 import SongService from './SongService';
+import SongZingItem from './SongZingItem';
+import { cleanWithHyphen } from '../../service/utils';
 import musicIcon from '../../assets/icons/music_icon.jpg';
 import './SongUpsertModal.scss';
-import SongZingItem from './SongZingItem';
 
 const TAB_UPLOAD_FILE = 'TAB_UPLOAD_FILE';
 const TAB_ZING_MP3 = 'TAB_ZING_MP3';
@@ -22,18 +23,19 @@ const TAB_ZING_MP3 = 'TAB_ZING_MP3';
 class SongUpsertModal extends PureComponent {
   constructor(props) {
     super(props);
-    const { id, title, artist, imageUrl, album, path, type, lyric } = props.selectedRow;
+    const { id, title, artist, imageUrl, album, path, type, lyric, zing_id } = props.selectedRow;
     this.state = {
       tabKey: TAB_UPLOAD_FILE,
       id,
       title: title ? title : '',
       artist: artist ? artist : '',
-      pictureBase64: null,
-      imageUrl,
+      pictureBase64: null, // dùng cho ảnh được upload từ local
+      imageUrl, // dùng cho ảnh của Zing
       album: album ? album : '',
       path: path ? path : '',
       type,
       lyric,
+      zing_id,
       invalid: {
         title: false
       },
@@ -72,6 +74,15 @@ class SongUpsertModal extends PureComponent {
 
   selectZingSong = ({ name = '', selected = {} }) => {
     console.log('selectZingSong', name, selected);
+    if (!selected) selected = {};
+    this.setState({
+      title: selected.title ? selected.title : '',
+      artist: selected.artistsNames ? selected.artistsNames : '',
+      imageUrl: selected.thumbnailM ? selected.thumbnailM : null,
+      album: selected.album ? selected.album.title : '',
+      path: selected.title ? this.generatePath(selected.title, selected.artistsNames) : '',
+      zing_id: selected.encodeId ? selected.encodeId : null
+    });
   };
 
   /**
@@ -82,8 +93,20 @@ class SongUpsertModal extends PureComponent {
    * @returns
    */
   onSave = () => {
-    const { id, title, artist, pictureBase64, album, path, type, lyric, file, removePicture } =
-      this.state;
+    const {
+      id,
+      title,
+      artist,
+      pictureBase64,
+      imageUrl,
+      album,
+      path,
+      type,
+      lyric,
+      zing_id,
+      file,
+      removePicture
+    } = this.state;
     const { action } = this.props;
 
     if (!title || !artist || !path || !type) {
@@ -107,6 +130,10 @@ class SongUpsertModal extends PureComponent {
       this.setState({ uploadingMp3: true });
       formData.append('type', type.value);
       formData.append('file', file);
+      if (zing_id) {
+        formData.append('zing_id', zing_id);
+        if (imageUrl) formData.append('imageUrl', imageUrl);
+      }
       SongService.createSong(formData)
         .then((res) => {
           Toast.success(res.message);
@@ -240,12 +267,9 @@ class SongUpsertModal extends PureComponent {
     this.setState({ path });
   };
 
+  // Note: khi update method này cũng phải update method phía BE
   generatePath = (title, artist) => {
-    return (title + ' ' + artist)
-      .trim()
-      .replace(/\s+/g, '-')
-      .replace(/[?,]+/g, '')
-      .replace(/[-]+/g, '-');
+    return cleanWithHyphen(title + ' ' + artist);
   };
 
   /**
