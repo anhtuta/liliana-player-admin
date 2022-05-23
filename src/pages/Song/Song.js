@@ -9,6 +9,7 @@ import PictureModal from './PictureModal';
 import Toast from '../../components/Toast/Toast';
 import ConfirmModal from '../../components/Modal/ConfirmModal';
 import SongService from './SongService';
+import { getAbsoluteUrl } from '../../service/utils';
 import musicIcon from '../../assets/icons/music_icon.jpg';
 import './Song.scss';
 
@@ -40,9 +41,7 @@ class Song extends PureComponent {
             <div className="td-song-info">
               <img
                 className="song-picture"
-                src={
-                  original.imageUrl ? process.env.REACT_APP_HOST_API + original.imageUrl : musicIcon
-                }
+                src={original.imageUrl ? getAbsoluteUrl(original.imageUrl) : musicIcon}
                 alt=""
                 onClick={() => {
                   if (original.imageUrl) this.displayPictureModal(original);
@@ -116,7 +115,7 @@ class Song extends PureComponent {
   displayPictureModal = (original) => {
     this.setState({
       showPictureModal: true,
-      pictureUrl: process.env.REACT_APP_HOST_API + original.imageUrl,
+      pictureUrl: getAbsoluteUrl(original.imageUrl),
       pictureTitle: original.title + "'s picture"
     });
   };
@@ -194,7 +193,7 @@ class Song extends PureComponent {
       id: original.id,
       title: original.title,
       artist: original.artist,
-      imageUrl: original.imageUrl ? process.env.REACT_APP_HOST_API + original.imageUrl : null,
+      imageUrl: original.imageUrl ? getAbsoluteUrl(original.imageUrl) : null,
       album: original.album,
       path: original.path,
       type: this.getTypeOption(original.type),
