@@ -466,16 +466,24 @@ class SongUpsertModal extends PureComponent {
             onChange={this.handleOnChangeType}
             isDisabled={action === ACTION_EDIT}
           />
-          {showUploadLyric && (
-            <InputFile
-              onChange={this.uploadLyric}
-              types={this.lyricFileTypes}
-              label={NO_LYRIC}
-              className="input-lyric"
-              fileName={lyricFileName}
-              uploading={uploadingLyric}
-            />
-          )}
+          {showUploadLyric &&
+            (tabKey === TAB_ZING_MP3 ? (
+              <InputText
+                label={NO_LYRIC}
+                className="input-lyric"
+                defaultValue="Lyric will be downloaded automatically"
+                disabled={true}
+              />
+            ) : (
+              <InputFile
+                onChange={this.uploadLyric}
+                types={this.lyricFileTypes}
+                label={NO_LYRIC}
+                className="input-lyric"
+                fileName={lyricFileName}
+                uploading={uploadingLyric}
+              />
+            ))}
           {!showUploadLyric && (
             <div className="download-lyric">
               <BoxInfo label="Lyric">
