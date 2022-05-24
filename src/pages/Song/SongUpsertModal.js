@@ -52,6 +52,7 @@ class SongUpsertModal extends PureComponent {
       pictureTitle: null
     };
     this.inputPicture = React.createRef();
+    this.selectSongRef = React.createRef();
   }
 
   handleOnChange = (obj) => {
@@ -68,8 +69,11 @@ class SongUpsertModal extends PureComponent {
     });
   };
 
-  handleOnChangeTab = (tabKey = '') => {
-    this.setState({ tabKey: tabKey });
+  handleOnChangeTab = async (tabKey = '') => {
+    // Note: phải use await nếu ko nó sẽ focus trước khi setState thực hiện xong,
+    // mà chưa setState xong tức là chưa chuyển được tab, thì focus ko có tác dụng
+    await this.setState({ tabKey: tabKey });
+    this.selectSongRef.current.focus();
   };
 
   selectZingSong = ({ name = '', selected = {} }) => {
@@ -371,6 +375,7 @@ class SongUpsertModal extends PureComponent {
                 getOptionLabel={this.getOptionLabel}
                 getOptionValue={this.getOptionValue}
                 styles={customItemStyles}
+                innerRef={this.selectSongRef}
               />
             </Tab>
           </Tabs>
