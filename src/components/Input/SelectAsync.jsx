@@ -11,6 +11,7 @@ const SelectAsync = (props) => {
     getOptionLabel,
     getOptionValue,
     styles,
+    innerRef = null,
     timeout = 500,
     isDisabled = false,
     isRequire = false,
@@ -53,6 +54,7 @@ const SelectAsync = (props) => {
         loadOptions={debounce(loadOptions.bind(this), timeout)}
         onChange={onChange}
         styles={styles}
+        ref={innerRef}
         isDisabled={isDisabled}
         isMulti={isMulti}
         isClearable={isClearable}
