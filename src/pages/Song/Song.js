@@ -37,6 +37,7 @@ class Song extends PureComponent {
         Header: 'Song',
         accessor: 'title',
         Cell: ({ original }) => {
+          // TODO: extract this to a component
           return (
             <div className="td-song-info">
               <img
@@ -49,12 +50,26 @@ class Song extends PureComponent {
                 style={{ cursor: original.imageUrl ? 'pointer' : 'default' }}
               />
               <div className="song-item">
-                <div className="song-title">{original.title}</div>
-                <div className="song-artist">{original.artist}</div>
-                <div className="song-album">({original.album})</div>
+                <div className="song-title" title="Song name">
+                  {original.title}
+                </div>
+                <div className="song-artist" title="Artist">
+                  {original.artist}
+                </div>
+                <div className="song-album" title="Album">
+                  ({original.album})
+                </div>
                 <div className="song-extra-info">
                   <span title={`Listens: ${original.listens}`}>({original.listens}) </span>
-                  <span title={`Type: ${original.type}`}>({original.type})</span>
+                  <span title={`Type: ${original.type}`}>({original.type}) </span>
+                  {original.zing_id && (
+                    <span
+                      style={{ fontWeight: 'bold' }}
+                      title={`ZingID: ${original.zing_id} (this song will be streamed from Zing Mp3)`}
+                    >
+                      ({original.zing_id})
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
