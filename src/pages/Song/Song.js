@@ -84,16 +84,23 @@ class Song extends PureComponent {
       {
         Header: 'Lyric',
         accessor: 'lyric',
-        Cell: ({ original }) => (
-          <span
-            style={{
-              fontWeight: original.lyric && original.lyric.endsWith('.trc') ? 'bold' : ''
-            }}
-            title={original.lyric}
-          >
-            {original.lyric ? original.lyric : NO_LYRIC}
-          </span>
-        )
+        Cell: ({ original }) => {
+          if (original.lyric) {
+            if (original.lyric.endsWith('.trc')) {
+              return (
+                <span
+                  style={{ fontWeight: 'bold' }}
+                  title={original.lyric + ' (.trc file is bold)'}
+                >
+                  {original.lyric}
+                </span>
+              );
+            } else {
+              // .lrc lyric: not bold
+              return <span title={original.lyric}>{original.lyric}</span>;
+            }
+          } else return <span>{NO_LYRIC}</span>;
+        }
       },
       {
         Header: 'Created date',
