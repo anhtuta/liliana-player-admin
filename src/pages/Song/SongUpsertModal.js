@@ -451,7 +451,7 @@ class SongUpsertModal extends PureComponent {
               onChange={this.handleOnChange}
             />
             <div className="btn-reset-path">
-              <Button text="Default" onClick={this.resetPath} />
+              <Button text="Default" onClick={this.resetPath} disabled={!path} />
             </div>
           </div>
         </div>
