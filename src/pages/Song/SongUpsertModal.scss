@@ -67,4 +67,15 @@
       align-items: center;
     }
   }
+  .nav-tabs {
+    a {
+      color: #495057;
+    }
+    .nav-link.active {
+      color: #007bff;
+    }
+  }
+  .tab-content {
+    min-height: 84px;
+  }
 }

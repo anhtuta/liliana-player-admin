@@ -83,6 +83,7 @@ class InputText extends PureComponent {
             type={type}
             name={name}
             value={value}
+            title={disabled ? value : ''}
             disabled={disabled}
             onChange={this.onChange}
             className={'input-text' + (!!errorMsg ? ' input-error' : '')}

@@ -1,7 +1,10 @@
 import React, { PureComponent } from 'react';
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
 import InputText from '../../components/Input/InputText';
 import InputFile from '../../components/Input/InputFile';
 import Select from '../../components/Input/Select';
+import SelectAsync from '../../components/Input/SelectAsync';
 import BoxInfo from '../../components/Input/BoxInfo';
 import Button from '../../components/Button/Button';
 import NormalModal from '../../components/Modal/NormalModal';
@@ -9,23 +12,30 @@ import { ACTION_ADD, ACTION_EDIT, NO_LYRIC } from '../../constants/Constants';
 import Toast from '../../components/Toast/Toast';
 import PictureModal from './PictureModal';
 import SongService from './SongService';
+import SongZingItem from './SongZingItem';
+import { cleanWithHyphen } from '../../service/utils';
 import musicIcon from '../../assets/icons/music_icon.jpg';
 import './SongUpsertModal.scss';
+
+const TAB_UPLOAD_FILE = 'TAB_UPLOAD_FILE';
+const TAB_ZING_MP3 = 'TAB_ZING_MP3';
 
 class SongUpsertModal extends PureComponent {
   constructor(props) {
     super(props);
-    const { id, title, artist, imageUrl, album, path, type, lyric } = props.selectedRow;
+    const { id, title, artist, imageUrl, album, path, type, lyric, zing_id } = props.selectedRow;
     this.state = {
+      tabKey: TAB_UPLOAD_FILE,
       id,
       title: title ? title : '',
       artist: artist ? artist : '',
-      pictureBase64: null,
-      imageUrl,
+      pictureBase64: null, // dùng cho ảnh được upload từ local
+      imageUrl, // dùng cho ảnh của Zing
       album: album ? album : '',
       path: path ? path : '',
       type,
       lyric,
+      zing_id,
       invalid: {
         title: false
       },
@@ -42,6 +52,7 @@ class SongUpsertModal extends PureComponent {
       pictureTitle: null
     };
     this.inputPicture = React.createRef();
+    this.selectSongRef = React.createRef();
   }
 
   handleOnChange = (obj) => {
@@ -58,6 +69,26 @@ class SongUpsertModal extends PureComponent {
     });
   };
 
+  handleOnChangeTab = async (tabKey = '') => {
+    // Note: phải use await nếu ko nó sẽ focus trước khi setState thực hiện xong,
+    // mà chưa setState xong tức là chưa chuyển được tab, thì focus ko có tác dụng
+    await this.setState({ tabKey: tabKey });
+    this.selectSongRef.current.focus();
+  };
+
+  selectZingSong = ({ name = '', selected = {} }) => {
+    console.log('selectZingSong', name, selected);
+    if (!selected) selected = {};
+    this.setState({
+      title: selected.title ? selected.title : '',
+      artist: selected.artistsNames ? selected.artistsNames : '',
+      imageUrl: selected.thumbnailM ? selected.thumbnailM : null,
+      album: selected.album ? selected.album.title : '',
+      path: selected.title ? this.generatePath(selected.title, selected.artistsNames) : '',
+      zing_id: selected.encodeId ? selected.encodeId : null
+    });
+  };
+
   /**
    * Send song to BE.
    * Note: nếu field nào đó, chẳng hạn album == null mà gửi cho BE
@@ -66,8 +97,20 @@ class SongUpsertModal extends PureComponent {
    * @returns
    */
   onSave = () => {
-    const { id, title, artist, pictureBase64, album, path, type, lyric, file, removePicture } =
-      this.state;
+    const {
+      id,
+      title,
+      artist,
+      pictureBase64,
+      imageUrl,
+      album,
+      path,
+      type,
+      lyric,
+      zing_id,
+      file,
+      removePicture
+    } = this.state;
     const { action } = this.props;
 
     if (!title || !artist || !path || !type) {
@@ -91,6 +134,10 @@ class SongUpsertModal extends PureComponent {
       this.setState({ uploadingMp3: true });
       formData.append('type', type.value);
       formData.append('file', file);
+      if (zing_id) {
+        formData.append('zing_id', zing_id);
+        if (imageUrl) formData.append('imageUrl', imageUrl);
+      }
       SongService.createSong(formData)
         .then((res) => {
           Toast.success(res.message);
@@ -224,17 +271,41 @@ class SongUpsertModal extends PureComponent {
     this.setState({ path });
   };
 
+  // Note: khi update method này cũng phải update method phía BE
   generatePath = (title, artist) => {
-    return (title + ' ' + artist)
-      .trim()
-      .replace(/\s+/g, '-')
-      .replace(/[?,]+/g, '')
-      .replace(/[-]+/g, '-');
+    return cleanWithHyphen(title + ' ' + artist);
+  };
+
+  /**
+   * @param {string} searchText
+   * @returns Promise, và data của Promise này sẽ là 1 array các option dùng cho <Select />
+   */
+  fetchZingSong = async (searchText) => {
+    const res = await SongService.searchZingSong(searchText);
+    return res.data.data.items;
+  };
+
+  /**
+   * obj chính là 1 phần tử của mảng options mà method fetchZingSong trả về
+   * @param {object} obj
+   */
+  getOptionLabel = (obj) => {
+    const { title, artistsNames, thumbnailM } = obj;
+    return <SongZingItem title={title} artistsNames={artistsNames} thumbnailM={thumbnailM} />;
+  };
+
+  /**
+   * obj chính là 1 phần tử của mảng options mà method fetchZingSong trả về
+   * @param {object} obj
+   */
+  getOptionValue = (obj) => {
+    return obj.encodeId;
   };
 
   render() {
     const { showUpsertModal, onCloseUpsertModal, typeOptions, action } = this.props;
     const {
+      tabKey,
       title,
       artist,
       pictureBase64,
@@ -253,6 +324,13 @@ class SongUpsertModal extends PureComponent {
       pictureUrl,
       pictureTitle
     } = this.state;
+    const modalTitle = action === ACTION_ADD ? 'Add new song' : 'Update song';
+    const customItemStyles = {
+      control: (base) => ({
+        ...base,
+        minHeight: 52
+      })
+    };
 
     return (
       <NormalModal
@@ -263,10 +341,8 @@ class SongUpsertModal extends PureComponent {
             <span className="uploading">
               <i className="fa fa-spinner fa-spin"></i> Wait me a second...
             </span>
-          ) : action === ACTION_ADD ? (
-            'Add new song'
           ) : (
-            'Update song'
+            modalTitle
           )
         }
         saveButtonText="Save"
@@ -277,14 +353,32 @@ class SongUpsertModal extends PureComponent {
         disabledBtn={loading}
       >
         {action === ACTION_ADD && (
-          <InputFile
-            onChange={this.loadMetadata}
-            types={this.fileTypes}
-            label="Please upload a mp3 file..."
-            isRequire={true}
-            fileName={fileName}
-            uploading={uploadingMp3}
-          />
+          <Tabs id="tab-add-song-type" activeKey={tabKey} onSelect={this.handleOnChangeTab}>
+            <Tab eventKey={TAB_UPLOAD_FILE} title="Upload file" tabClassName="tab-upload-file">
+              <InputFile
+                onChange={this.loadMetadata}
+                types={this.fileTypes}
+                label="Please upload a mp3 file..."
+                isRequire={true}
+                fileName={fileName}
+                uploading={uploadingMp3}
+              />
+            </Tab>
+            <Tab eventKey={TAB_ZING_MP3} title="Zing Mp3" tabClassName="tab-zing-mp3">
+              <SelectAsync
+                name="selectZingSong"
+                label="Select a song from Zing Mp3"
+                placeholder="Search song"
+                isRequire={true}
+                onChange={this.selectZingSong}
+                loadOptions={this.fetchZingSong}
+                getOptionLabel={this.getOptionLabel}
+                getOptionValue={this.getOptionValue}
+                styles={customItemStyles}
+                innerRef={this.selectSongRef}
+              />
+            </Tab>
+          </Tabs>
         )}
         <div className="title-artist-picture">
           <div className="title-artist">
@@ -357,7 +451,7 @@ class SongUpsertModal extends PureComponent {
               onChange={this.handleOnChange}
             />
             <div className="btn-reset-path">
-              <Button text="Default" onClick={this.resetPath} />
+              <Button text="Default" onClick={this.resetPath} disabled={!path} />
             </div>
           </div>
         </div>
@@ -372,16 +466,24 @@ class SongUpsertModal extends PureComponent {
             onChange={this.handleOnChangeType}
             isDisabled={action === ACTION_EDIT}
           />
-          {showUploadLyric && (
-            <InputFile
-              onChange={this.uploadLyric}
-              types={this.lyricFileTypes}
-              label={NO_LYRIC}
-              className="input-lyric"
-              fileName={lyricFileName}
-              uploading={uploadingLyric}
-            />
-          )}
+          {showUploadLyric &&
+            (tabKey === TAB_ZING_MP3 ? (
+              <InputText
+                label={NO_LYRIC}
+                className="input-lyric"
+                defaultValue="Lyric will be downloaded automatically"
+                disabled={true}
+              />
+            ) : (
+              <InputFile
+                onChange={this.uploadLyric}
+                types={this.lyricFileTypes}
+                label={NO_LYRIC}
+                className="input-lyric"
+                fileName={lyricFileName}
+                uploading={uploadingLyric}
+              />
+            ))}
           {!showUploadLyric && (
             <div className="download-lyric">
               <BoxInfo label="Lyric">

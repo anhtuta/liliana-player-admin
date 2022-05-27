@@ -9,6 +9,7 @@ import PictureModal from './PictureModal';
 import Toast from '../../components/Toast/Toast';
 import ConfirmModal from '../../components/Modal/ConfirmModal';
 import SongService from './SongService';
+import { getAbsoluteUrl } from '../../service/utils';
 import musicIcon from '../../assets/icons/music_icon.jpg';
 import './Song.scss';
 
@@ -36,13 +37,12 @@ class Song extends PureComponent {
         Header: 'Song',
         accessor: 'title',
         Cell: ({ original }) => {
+          // TODO: extract this to a component
           return (
             <div className="td-song-info">
               <img
                 className="song-picture"
-                src={
-                  original.imageUrl ? process.env.REACT_APP_HOST_API + original.imageUrl : musicIcon
-                }
+                src={original.imageUrl ? getAbsoluteUrl(original.imageUrl) : musicIcon}
                 alt=""
                 onClick={() => {
                   if (original.imageUrl) this.displayPictureModal(original);
@@ -50,12 +50,26 @@ class Song extends PureComponent {
                 style={{ cursor: original.imageUrl ? 'pointer' : 'default' }}
               />
               <div className="song-item">
-                <div className="song-title">{original.title}</div>
-                <div className="song-artist">{original.artist}</div>
-                <div className="song-album">({original.album})</div>
+                <div className="song-title" title="Song name">
+                  {original.title}
+                </div>
+                <div className="song-artist" title="Artist">
+                  {original.artist}
+                </div>
+                <div className="song-album" title="Album">
+                  ({original.album})
+                </div>
                 <div className="song-extra-info">
                   <span title={`Listens: ${original.listens}`}>({original.listens}) </span>
-                  <span title={`Type: ${original.type}`}>({original.type})</span>
+                  <span title={`Type: ${original.type}`}>({original.type}) </span>
+                  {original.zing_id && (
+                    <span
+                      style={{ fontWeight: 'bold' }}
+                      title={`ZingID: ${original.zing_id} (this song will be streamed from Zing Mp3)`}
+                    >
+                      ({original.zing_id})
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -70,16 +84,23 @@ class Song extends PureComponent {
       {
         Header: 'Lyric',
         accessor: 'lyric',
-        Cell: ({ original }) => (
-          <span
-            style={{
-              fontWeight: original.lyric && original.lyric.endsWith('.trc') ? 'bold' : ''
-            }}
-            title={original.lyric}
-          >
-            {original.lyric ? original.lyric : NO_LYRIC}
-          </span>
-        )
+        Cell: ({ original }) => {
+          if (original.lyric) {
+            if (original.lyric.endsWith('.trc')) {
+              return (
+                <span
+                  style={{ fontWeight: 'bold' }}
+                  title={original.lyric + ' (.trc file is bold)'}
+                >
+                  {original.lyric}
+                </span>
+              );
+            } else {
+              // .lrc lyric: not bold
+              return <span title={original.lyric}>{original.lyric}</span>;
+            }
+          } else return <span>{NO_LYRIC}</span>;
+        }
       },
       {
         Header: 'Created date',
@@ -116,7 +137,7 @@ class Song extends PureComponent {
   displayPictureModal = (original) => {
     this.setState({
       showPictureModal: true,
-      pictureUrl: process.env.REACT_APP_HOST_API + original.imageUrl,
+      pictureUrl: getAbsoluteUrl(original.imageUrl),
       pictureTitle: original.title + "'s picture"
     });
   };
@@ -194,7 +215,7 @@ class Song extends PureComponent {
       id: original.id,
       title: original.title,
       artist: original.artist,
-      imageUrl: original.imageUrl ? process.env.REACT_APP_HOST_API + original.imageUrl : null,
+      imageUrl: original.imageUrl ? getAbsoluteUrl(original.imageUrl) : null,
       album: original.album,
       path: original.path,
       type: this.getTypeOption(original.type),
