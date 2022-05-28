@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import musicIcon from '../../assets/icons/music_icon.jpg';
 import './SongZingItem.scss';
 

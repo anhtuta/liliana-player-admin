@@ -43,12 +43,7 @@ class App extends Component {
               <Route exact path="/" component={Loadable.Home} />
               <Route exact path="/about" component={Loadable.About} />
               <RestrictedRoute exact path="/login" component={Loadable.Login} />
-              <PrivateRoute
-                exact
-                path="/song"
-                component={Loadable.Song}
-                userInfo={userInfo}
-              />
+              <PrivateRoute exact path="/song" component={Loadable.Song} userInfo={userInfo} />
               <Route path="" component={Loadable.NotFound} />
             </Switch>
           </div>
