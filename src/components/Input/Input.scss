@@ -11,6 +11,13 @@
   .input-error-msg {
     color: red;
   }
+  .input-text-wrapper {
+    display: flex;
+    align-items: center;
+    i {
+      margin-left: 10px;
+    }
+  }
   .input-text {
     width: 100%;
     padding: 0.375rem 0.75rem;
@@ -22,6 +29,9 @@
     border-radius: 0.25rem;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     line-height: initial; /* override this prop of bootstrap */
+    &:disabled {
+      background: #f2f2f2;
+    }
   }
   .input-text:focus,
   .drop-highlight {
