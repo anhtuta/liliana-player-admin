@@ -47,7 +47,6 @@ class SongUpsertModal extends PureComponent {
       uploadingLyric: false,
       removePicture: 0,
       showPictureModal: false,
-      showUploadLyric: !lyric,
       pictureUrl: null,
       pictureTitle: null
     };
@@ -215,7 +214,6 @@ class SongUpsertModal extends PureComponent {
         this.setState({
           loading: false,
           uploadingLyric: false,
-          // showUploadLyric: false,
           lyric: file.name
         });
       })
@@ -302,6 +300,10 @@ class SongUpsertModal extends PureComponent {
     return obj.encodeId;
   };
 
+  onClearLyric = () => {
+    this.setState({ lyric: '' });
+  };
+
   render() {
     const { showUpsertModal, onCloseUpsertModal, typeOptions, action } = this.props;
     const {
@@ -320,7 +322,6 @@ class SongUpsertModal extends PureComponent {
       uploadingMp3,
       uploadingLyric,
       showPictureModal,
-      showUploadLyric,
       pictureUrl,
       pictureTitle
     } = this.state;
@@ -437,40 +438,39 @@ class SongUpsertModal extends PureComponent {
           <InputText
             name="album"
             label="Album"
-            className="input-album"
+            className="box-album"
             defaultValue={album}
             onChange={this.handleOnChange}
           />
-          <div className="path-wrapper">
+          <div className="box-path">
             <InputText
               name="path"
               label="Path"
               className="input-path"
               defaultValue={path}
               isRequire={true}
+              isReset={true}
+              onReset={this.resetPath}
               onChange={this.handleOnChange}
             />
-            <div className="btn-reset-path">
-              <Button text="Default" onClick={this.resetPath} disabled={!path} />
-            </div>
           </div>
         </div>
         <div className="type-lyric">
           <Select
             name="type"
             label="Type"
-            className="select-type"
+            className="box-select"
             defaultValue={type}
             options={typeOptions}
             isRequire={true}
             onChange={this.handleOnChangeType}
             isDisabled={action === ACTION_EDIT}
           />
-          {showUploadLyric &&
+          {!lyric &&
             (tabKey === TAB_ZING_MP3 ? (
               <InputText
                 label={NO_LYRIC}
-                className="input-lyric"
+                className="box-lyric"
                 defaultValue="Lyric will be downloaded automatically"
                 disabled={true}
               />
@@ -479,31 +479,22 @@ class SongUpsertModal extends PureComponent {
                 onChange={this.uploadLyric}
                 types={this.lyricFileTypes}
                 label={NO_LYRIC}
-                className="input-lyric"
+                className="box-lyric"
                 fileName={lyricFileName}
                 uploading={uploadingLyric}
               />
             ))}
-          {!showUploadLyric && (
-            <div className="download-lyric">
-              <BoxInfo label="Lyric">
-                {lyric ? (
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={process.env.REACT_APP_HOST_API + '/api/lyric/download?file=' + lyric}
-                  >
-                    {lyric}
-                  </a>
-                ) : (
-                  NO_LYRIC
-                )}
-              </BoxInfo>
-              <i
-                className="fa fa-upload icon-btn-action icon-btn-edit"
-                onClick={() => this.setState({ showUploadLyric: true })}
-                title="Upload new lyric"
-              ></i>
+          {lyric && (
+            <div className="box-lyric">
+              <InputText
+                label="Lyric"
+                className="lyric-name"
+                defaultValue={lyric}
+                disabled={true}
+                isClear={true}
+                titleClear="Remove this lyric"
+                onClear={this.onClearLyric}
+              />
             </div>
           )}
         </div>

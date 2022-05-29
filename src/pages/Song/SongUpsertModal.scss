@@ -35,15 +35,14 @@
   .album-path {
     display: flex;
     justify-content: space-between;
-    .input-album {
+    .box-album {
       width: 48%;
     }
-    .path-wrapper {
+    .box-path {
       width: 48%;
       display: flex;
       .input-path {
         width: 100%;
-        margin-right: 5px;
       }
       .btn-reset-path {
         position: relative;
@@ -54,10 +53,10 @@
   .type-lyric {
     display: flex;
     justify-content: space-between;
-    .input-lyric {
+    .box-lyric {
       width: 48%;
     }
-    .select-type {
+    .box-select {
       width: 48%;
     }
     .download-lyric {
