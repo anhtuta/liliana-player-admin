@@ -5,8 +5,6 @@ import InputText from '../../components/Input/InputText';
 import InputFile from '../../components/Input/InputFile';
 import Select from '../../components/Input/Select';
 import SelectAsync from '../../components/Input/SelectAsync';
-import BoxInfo from '../../components/Input/BoxInfo';
-import Button from '../../components/Button/Button';
 import NormalModal from '../../components/Modal/NormalModal';
 import { ACTION_ADD, ACTION_EDIT, NO_LYRIC } from '../../constants/Constants';
 import Toast from '../../components/Toast/Toast';
@@ -300,6 +298,12 @@ class SongUpsertModal extends PureComponent {
     return obj.encodeId;
   };
 
+  updateZingLyric = async () => {
+    const res = await SongService.updateZingLyric(this.props.selectedRow.zing_id);
+    this.setState({ lyric: res.data });
+    Toast.info('Re-download successfully! File saved: ' + res.data);
+  };
+
   onClearLyric = () => {
     this.setState({ lyric: '' });
   };
@@ -332,6 +336,7 @@ class SongUpsertModal extends PureComponent {
         minHeight: 52
       })
     };
+    const { zing_id } = this.props.selectedRow;
 
     return (
       <NormalModal
@@ -491,8 +496,11 @@ class SongUpsertModal extends PureComponent {
                 className="lyric-name"
                 defaultValue={lyric}
                 disabled={true}
+                isReset={!!zing_id}
                 isClear={true}
+                titleReset="Re-download lyric from Zing"
                 titleClear="Remove this lyric"
+                onReset={this.updateZingLyric}
                 onClear={this.onClearLyric}
               />
             </div>

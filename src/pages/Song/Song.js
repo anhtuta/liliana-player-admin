@@ -219,7 +219,8 @@ class Song extends PureComponent {
       album: original.album,
       path: original.path,
       type: this.getTypeOption(original.type),
-      lyric: original.lyric
+      lyric: original.lyric,
+      zing_id: original.zing_id
     };
     this.setState({
       action: ACTION_EDIT,

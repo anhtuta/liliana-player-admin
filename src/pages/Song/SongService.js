@@ -30,6 +30,10 @@ const uploadLyric = (data) => {
   return axiosClient.post('/api/lyric/upload', data);
 };
 
+const updateZingLyric = (zing_id) => {
+  return axiosClient.get('/api/zing/mp3/lyric/update', { params: { zing_id } });
+};
+
 const SongService = {
   getSongs,
   searchZingSong,
@@ -37,7 +41,8 @@ const SongService = {
   updateSong,
   deleteSong,
   getAllTypes,
-  uploadLyric
+  uploadLyric,
+  updateZingLyric
 };
 
 export default SongService;
