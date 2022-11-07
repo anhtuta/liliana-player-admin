@@ -39,6 +39,21 @@ axios.interceptors.request.use(
   }
 );
 
+/*
+error.response sẽ có dạng:
+{
+  "data": "Unauthorized.",
+  "status": 401,
+  "statusText": "Unauthorized",
+  "headers": {
+      "cache-control": "no-cache, private",
+      "content-length": "17",
+      "content-type": "text/html; charset=UTF-8"
+  },
+  "config": {...},
+  "request": {}
+}
+*/
 axios.interceptors.response.use(
   (response) => {
     if (response && response.data) return response.data;

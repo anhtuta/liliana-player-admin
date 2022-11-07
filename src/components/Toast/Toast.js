@@ -24,10 +24,16 @@ const warn = (text) => {
 };
 
 const error = (err) => {
+  // console.log('err', err);
+  if (err.status && err.status === 401) {
+    // Đã handle bên axios.interceptors.response rồi
+    return;
+  }
   let msg;
   if (err.data && err.data.message) msg = err.data.message;
   else if (err) msg = err.toString();
   else msg = 'Error: unexpected error occurred!';
+  // console.log('Error: ', msg); // For debugging only
   toast.error(msg, options);
 };
 

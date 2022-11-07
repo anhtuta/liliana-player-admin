@@ -153,7 +153,6 @@ class Song extends PureComponent {
         this.setState({ typeOptions });
       })
       .catch((err) => {
-        console.log(err);
         Toast.error(err);
       });
   }
@@ -185,7 +184,6 @@ class Song extends PureComponent {
         });
       })
       .catch((err) => {
-        console.log(err);
         Toast.error(err);
         this.setState({
           loading: false
@@ -271,7 +269,6 @@ class Song extends PureComponent {
         this.getSongs(this.state.params);
       })
       .catch((err) => {
-        console.log(err);
         Toast.error(err);
       });
   };

@@ -142,7 +142,6 @@ class SongUpsertModal extends PureComponent {
           this.props.onSave();
         })
         .catch((err) => {
-          console.log(err);
           Toast.error(err);
           this.setState({ loading: false, uploadingMp3: false });
         });
@@ -155,7 +154,6 @@ class SongUpsertModal extends PureComponent {
           this.props.onSave();
         })
         .catch((err) => {
-          console.log(err);
           this.setState({ loading: false });
           Toast.error(err);
         });
@@ -216,7 +214,6 @@ class SongUpsertModal extends PureComponent {
         });
       })
       .catch((err) => {
-        console.log(err);
         Toast.error(err);
         this.setState({ loading: false, uploadingLyric: true });
       });

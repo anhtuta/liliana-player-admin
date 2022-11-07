@@ -29,7 +29,7 @@ class Auth {
       });
   };
 
-  logout = () => {
+  logoutOld = () => {
     axiosClient
       .post('/auth/logout')
       .then((res) => {
@@ -37,9 +37,13 @@ class Auth {
         window.location = '/';
       })
       .catch((err) => {
-        console.log(err);
         Toast.error(err);
       });
+  };
+
+  logout = () => {
+    localStorage.removeItem(ACCESS_TOKEN);
+    window.location = '/';
   };
 
   getMe = () => {
@@ -47,8 +51,12 @@ class Auth {
   };
 
   redirectToLoginPage = () => {
-    Toast.info('You need to login first!');
-    localStorage.removeItem(ACCESS_TOKEN);
+    if (localStorage.getItem(ACCESS_TOKEN)) {
+      Toast.error('Access token has been expired!');
+      localStorage.removeItem(ACCESS_TOKEN);
+    } else {
+      Toast.info('You need to login first!');
+    }
     window.location.hash = '/login';
   };
 
