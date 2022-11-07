@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  app-dev:
+    image: anhtuta/lili-admin-dev:v1
+    container_name: lili-admin-dev
+    stdin_open: true  # https://github.com/facebook/create-react-app/issues/8688#issuecomment-602110747
+    build:
+      context: .  # path to a directory containing a Dockerfile, or a url to a git repository
+      dockerfile: Dockerfile.dev
+    command: npm run start
+    ports:
+      - "3006:3006"        
+    volumes: 
+      - ./public:/app/public
+      - ./src:/app/src
+      - /app/node_modules
