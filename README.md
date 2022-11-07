@@ -1,6 +1,26 @@
-## Note
+## How to run
 
-### Code base
+This project has been developing with Nodejs version 16
+
+### Not using docker: run with local env
+
+- `yarn install`
+- `yarn start`
+- Open browser and see the result: http://localhost:3006/#/
+
+### Using docker: build and run with production env
+
+- Build image: `docker build -t anhtuta/lili-admin:v1 .`
+- Run container: `docker-compose up`
+- Open browser and see the result: http://localhost:3006/#/
+- Open another terminal (within project folder), run following command to go inside the container and explore by yourself: `docker-compose exec app sh` (note: `app` là tên của service/container ta muốn xem)
+
+## How to build and deploy to a static web server
+
+- `yarn build`
+- Copy all static files in `build` folder to your web server
+
+## Code base
 
 This is my code base, includes all of my latest updated common components!
 
@@ -15,9 +35,7 @@ Các components sau thường sẽ dùng chung cho nhiều project, và nếu up
 - src\components\Toast
 - .prettierrc
 
-### Node version
-
-This project has been developing with Nodejs version 16
+## Một vài note về code của dự án
 
 ### Set port to run on local
 
@@ -38,6 +56,8 @@ But when I switch to macOS, I need to change it to:
 ```
 "start": "cross-env PORT=3006 react-scripts start",
 ```
+
+---
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

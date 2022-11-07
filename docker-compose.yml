@@ -1,0 +1,8 @@
+version: "3.9"
+
+services:
+  app:
+    image: anhtuta/lili-admin:v1
+    ports:
+      - "3006:80"
+    restart: unless-stopped

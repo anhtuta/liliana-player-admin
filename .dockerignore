@@ -1,0 +1,9 @@
+.circleci
+.vscode
+/build
+/node_modules
+.gitignore
+.prettierrc
+Demo.wmv
+README.md
+yarn.lock
