@@ -1,8 +1,11 @@
 ## Note
 
+### Code base
+
 This is my code base, includes all of my latest updated common components!
 
 Các components sau thường sẽ dùng chung cho nhiều project, và nếu update chúng ở project khác, thì sẽ cần update ở cả project này nữa:
+
 - src\components\Auth (Sửa API endpoint và 1 vài chỗ nhỏ khác)
 - src\components\Button
 - src\components\Input
@@ -11,6 +14,30 @@ Các components sau thường sẽ dùng chung cho nhiều project, và nếu up
 - src\components\Table
 - src\components\Toast
 - .prettierrc
+
+### Node version
+
+This project has been developing with Nodejs version 16
+
+### Set port to run on local
+
+On Windows:
+
+```
+"start": "set PORT=3006 && react-scripts start"
+```
+
+But when I switch to macOS, I need to change it to:
+
+```
+"start": "PORT=3006 react-scripts start"
+```
+
+=> Solution: using `cross-env`: https://stackoverflow.com/a/48669909/7688028
+
+```
+"start": "cross-env PORT=3006 react-scripts start",
+```
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
