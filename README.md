@@ -37,6 +37,16 @@ Các components sau thường sẽ dùng chung cho nhiều project, và nếu up
 
 ## Một vài note về code của dự án
 
+### CircleCI
+
+CircleCI dùng để auto build mỗi khi có commit mới nhất được push lên github
+
+Vào đây mà xem: https://app.circleci.com/pipelines/github/anhtuta/liliana-player-admin
+
+Config circleCI ở file `.circleci/config.yml`. Hình như hồi đó lên github config xong nó tự gen ra cái file này hộ, sau đó chỉnh sửa xíu lại là được. Hiện tại thì đang config nếu như có commit push lên nhánh `master` thì mới chạy circleCI.
+
+Sau khi chạy xong thì có file build được nén lại đó. Chẳng hạn, có thể vào đây, sang tab artifacts để download file build về: https://app.circleci.com/pipelines/github/anhtuta/liliana-player-admin/28/workflows/1f8ef2a7-fd0b-49ce-b659-2bd89ddbd1d9/jobs/19/resources
+
 ### Set port to run on local
 
 On Windows:
