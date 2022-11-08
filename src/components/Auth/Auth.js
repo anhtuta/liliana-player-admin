@@ -50,10 +50,12 @@ class Auth {
     return axiosClient.get('/auth/me');
   };
 
-  redirectToLoginPage = () => {
+  redirectToLoginPage = (response) => {
     if (localStorage.getItem(ACCESS_TOKEN)) {
       Toast.error('Access token has been expired!');
       localStorage.removeItem(ACCESS_TOKEN);
+    } else if (response && response.data) {
+      Toast.error(response.data.message);
     } else {
       Toast.info('You need to login first!');
     }

@@ -3,7 +3,6 @@ import { Redirect } from 'react-router-dom';
 import Button from '../../components/Button/Button';
 import InputText from '../../components/Input/InputText';
 import { auth } from '../../components/Auth/Auth';
-import Toast from '../../components/Toast/Toast';
 import './Login.scss';
 
 class Login extends PureComponent {
@@ -42,7 +41,8 @@ class Login extends PureComponent {
         window.location.reload();
       },
       (err) => {
-        Toast.error(err);
+        // Lỗi này API return status = 401, đã xử lý bên axios.interceptors rồi
+        // Toast.error(err);
       }
     );
   };
@@ -57,12 +57,7 @@ class Login extends PureComponent {
     return (
       <div className="login-wrapper">
         <h2 className="login-header">Login</h2>
-        <InputText
-          label="Username"
-          name="username"
-          value={username}
-          onChange={this.onChange}
-        />
+        <InputText label="Username" name="username" value={username} onChange={this.onChange} />
         <InputText
           label="Password"
           name="password"
