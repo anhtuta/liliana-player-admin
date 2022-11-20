@@ -13,7 +13,23 @@ This project has been developing with Nodejs version 16
 - Build image: `docker build -t anhtuta/lili-admin:v1 .`
 - Run container: `docker-compose up`
 - Open browser and see the result: http://localhost:3006/#/
-- Open another terminal (within project folder), run following command to go inside the container and explore by yourself: `docker-compose exec app sh` (note: `app` là tên của service/container ta muốn xem)
+- Go inside the container and explore by yourself: `docker-compose exec app sh` (note: `app` là tên của service/container ta muốn xem)
+
+Ref: https://viblo.asia/p/dockerize-ung-dung-vuejs-reactjs-ORNZqxwNK0n
+
+### Using docker: run with local env
+
+Cách này giống như chạy lệnh `yarn start` ở local vậy. Ta tạo file `Dockerfile.dev` và file `docker-compose-dev.yml` để thực hiện việc này
+
+- Trong file compose đã chỉ rõ việc build image rồi, nên ko cần chạy `docker build` nữa
+- Chỉ cần chạy lệnh sau là được: `docker-compose -f docker-compose-dev.yml up -d`
+- Open browser and see the result: http://localhost:3006/#/
+- Vào trong container: `docker-compose exec app-dev sh`
+
+Ref:
+
+- https://learn2torials.com/a/dockerize-reactjs-app
+- https://github.com/facebook/create-react-app/issues/8688#issuecomment-602110747
 
 ## How to build and deploy to a static web server
 

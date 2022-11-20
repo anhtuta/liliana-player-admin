@@ -62,7 +62,7 @@ axios.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status) {
       if (error.response.status === 401) {
-        auth.redirectToLoginPage();
+        auth.redirectToLoginPage(error.response);
       }
       //... handle other statuses
       return Promise.reject(error.response);

@@ -1,0 +1,6 @@
+FROM node:16.18.0-alpine as build-stage
+# thư mục này sẽ dùng bên docker-compose
+WORKDIR /app
+COPY . .
+RUN npm install
+CMD ["npm", "run", "start"]

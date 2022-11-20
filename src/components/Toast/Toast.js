@@ -25,7 +25,7 @@ const warn = (text) => {
 
 const error = (err) => {
   // console.log('err', err);
-  if (err.status && err.status === 401) {
+  if (err && err.status && err.status === 401) {
     // Đã handle bên axios.interceptors.response rồi
     return;
   }

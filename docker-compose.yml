@@ -3,6 +3,7 @@ version: "3.9"
 services:
   app:
     image: anhtuta/lili-admin:v1
+    container_name: lili-admin
     ports:
       - "3006:80"
     restart: unless-stopped
