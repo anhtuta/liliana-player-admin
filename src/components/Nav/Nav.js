@@ -18,6 +18,8 @@ class Nav extends Component {
           // ĐỪNG dùng splice, bởi vì JS bất đồng bộ nên sẽ bị lỗi thỉnh thoảng bị miss menu item
           // menuItems.splice(index, 1);
           item.enabled = false;
+        } else {
+          item.enabled = true;
         }
       }
     });

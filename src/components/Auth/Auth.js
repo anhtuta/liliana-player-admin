@@ -69,8 +69,11 @@ class Auth {
    */
   rolesHasPermission = (roles, path) => {
     if (!ROLE_TABLE[path]) return true;
-    for (let i = 0; i < roles.length; i++) {
-      if (ROLE_TABLE[path].includes(roles[i])) return true;
+    for (const role of roles) {
+      if (ROLE_TABLE[path].includes(role)) {
+        // console.log(`User can access protected path = ${path}`);
+        return true;
+      }
     }
     // Dùng forEach: bất đồng bộ nên ko được nhé!
     // Nó sẽ return false trước khi chạy vào trong forEach
