@@ -297,8 +297,12 @@ class SongUpsertModal extends PureComponent {
 
   updateZingLyric = async () => {
     const res = await SongService.updateZingLyric(this.props.selectedRow.zing_id);
-    this.setState({ lyric: res.data });
-    Toast.info('Re-download successfully! File saved: ' + res.data);
+    if (res.data) {
+      this.setState({ lyric: res.data });
+      Toast.info('Re-download successfully! File saved: ' + res.data);
+    } else {
+      Toast.warn("Zing doesn't have lyric for this song, nothing changed!");
+    }
   };
 
   onClearLyric = () => {
