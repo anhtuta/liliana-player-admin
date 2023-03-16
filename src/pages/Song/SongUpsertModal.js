@@ -9,6 +9,7 @@ import NormalModal from '../../components/Modal/NormalModal';
 import { ACTION_ADD, ACTION_EDIT, NO_LYRIC } from '../../constants/Constants';
 import Toast from '../../components/Toast/Toast';
 import PictureModal from './PictureModal';
+import FindLyricModal from './FindLyricModal';
 import SongService from './SongService';
 import SongZingItem from './SongZingItem';
 import { cleanWithHyphen } from '../../service/utils';
@@ -45,6 +46,7 @@ class SongUpsertModal extends PureComponent {
       uploadingLyric: false,
       removePicture: 0,
       showPictureModal: false,
+      showFindLyricModal: false,
       pictureUrl: null,
       pictureTitle: null
     };
@@ -174,8 +176,8 @@ class SongUpsertModal extends PureComponent {
         if ('picture' in tags) {
           const image = tags.picture;
           let base64String = '';
-          for (let i = 0; i < image.data.length; i++) {
-            base64String += String.fromCharCode(image.data[i]);
+          for (const element of image.data) {
+            base64String += String.fromCharCode(element);
           }
           pictureBase64 = 'data:' + image.format + ';base64,' + window.btoa(base64String);
         }
@@ -327,6 +329,7 @@ class SongUpsertModal extends PureComponent {
       uploadingMp3,
       uploadingLyric,
       showPictureModal,
+      showFindLyricModal,
       pictureUrl,
       pictureTitle
     } = this.state;
@@ -474,36 +477,56 @@ class SongUpsertModal extends PureComponent {
           />
           {!lyric &&
             (tabKey === TAB_ZING_MP3 ? (
-              <InputText
-                label={NO_LYRIC}
-                className="box-lyric"
-                defaultValue="Lyric will be downloaded automatically"
-                disabled={true}
-              />
+              <div className="box-lyric">
+                <div className="input-lyric">
+                  <InputText
+                    label={NO_LYRIC}
+                    className="lyric-name"
+                    defaultValue="Lyric will be downloaded automatically"
+                    disabled={true}
+                  />
+                </div>
+              </div>
             ) : (
-              <InputFile
-                onChange={this.uploadLyric}
-                types={this.lyricFileTypes}
-                label={NO_LYRIC}
-                className="box-lyric"
-                fileName={lyricFileName}
-                uploading={uploadingLyric}
-              />
+              <div className="box-lyric">
+                <div className="input-lyric">
+                  <InputFile
+                    onChange={this.uploadLyric}
+                    types={this.lyricFileTypes}
+                    label={NO_LYRIC}
+                    className="lyric-name"
+                    fileName={lyricFileName}
+                    uploading={uploadingLyric}
+                  />
+                </div>
+                <i
+                  className="fa fa-eye icon-btn-action icon-btn-edit btn-find-file"
+                  onClick={() => this.setState({ showFindLyricModal: true })}
+                  title={'Select available lyrics'}
+                ></i>
+              </div>
             ))}
           {lyric && (
             <div className="box-lyric">
-              <InputText
-                label="Lyric"
-                className="lyric-name"
-                defaultValue={lyric}
-                disabled={true}
-                isReset={!!zing_id}
-                isClear={true}
-                titleReset="Re-download lyric from Zing"
-                titleClear="Remove this lyric"
-                onReset={this.updateZingLyric}
-                onClear={this.onClearLyric}
-              />
+              <div className="input-lyric">
+                <InputText
+                  label="Lyric"
+                  className="lyric-name"
+                  defaultValue={lyric}
+                  disabled={true}
+                  isReset={!!zing_id}
+                  isClear={true}
+                  titleReset="Re-download lyric from Zing"
+                  titleClear="Remove this lyric"
+                  onReset={this.updateZingLyric}
+                  onClear={this.onClearLyric}
+                />
+              </div>
+              <i
+                className="fa fa-eye icon-btn-action icon-btn-edit btn-find-file"
+                onClick={() => this.setState({ showFindLyricModal: true })}
+                title={'Select available lyrics'}
+              ></i>
             </div>
           )}
         </div>
@@ -514,6 +537,14 @@ class SongUpsertModal extends PureComponent {
             pictureUrl={pictureUrl}
             pictureTitle={pictureTitle}
             onClose={this.onClosePictureModal}
+          />
+        )}
+
+        {showFindLyricModal && (
+          <FindLyricModal
+            show={showFindLyricModal}
+            onClose={() => this.setState({ showFindLyricModal: false })}
+            onChooseFile={(filename) => this.setState({ lyric: filename })}
           />
         )}
       </NormalModal>
