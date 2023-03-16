@@ -1,3 +1,7 @@
+# Liliana Player Admin
+
+Admin portal for Liliana Player. See production here: https://anhtuta.github.io/lili-admin/
+
 ## How to run
 
 This project has been developing with Nodejs version 16
@@ -30,6 +34,22 @@ Ref:
 
 - https://learn2torials.com/a/dockerize-reactjs-app
 - https://github.com/facebook/create-react-app/issues/8688#issuecomment-602110747
+
+## How to debug in VS Code
+
+Nguyên lý debug:
+
+- Start app ở terminal như bình thường
+- Sau đó start debugger lắng nghe server vừa start ở trên
+
+Các bước debug:
+
+- Create `launch.json` file, để cho debugger dùng
+- Cài extension **Debugger for Chrome** (giờ thay thế bằng JavaScript Debugger), ko biết cái này có sẵn hay tự cài nữa, quên rồi!
+- Mở terminal và start app như thường: `yarn start`. Sau khi start xong thì 1 browser sẽ được mở lên. Cái này KHÔNG dùng cho debugger
+- Start debugger: ấn F5 hoặc chi tiết thì vào tab debugger và start. Lúc này 1 browser mới sẽ được mở lên, hãy thao tác trên này vì debugger chỉ hoạt động trên này!
+
+![](./how-to-debug.png)
 
 ## How to build and deploy to a static web server
 

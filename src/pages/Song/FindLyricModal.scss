@@ -1,0 +1,7 @@
+.find-lyric-modal {
+  max-width: min(800px, 80vw);
+  .table-wrapper {
+    max-height: 60vh;
+    overflow: scroll;
+  }
+}

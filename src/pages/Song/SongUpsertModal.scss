@@ -1,5 +1,5 @@
 .song-upsert-modal {
-  max-width: 700px;
+  max-width: min(900px, 90vw);
   .title-artist-picture {
     display: flex;
     flex-direction: row;
@@ -54,7 +54,19 @@
     display: flex;
     justify-content: space-between;
     .box-lyric {
+      display: flex;
+      justify-content: space-between;
       width: 48%;
+      .input-lyric {
+        width: calc(100% - 25px);
+        .lyric-name {
+          width: 100%;
+        }
+      }
+      .btn-find-file {
+        position: relative;
+        top: 46px;
+      }
     }
     .box-select {
       width: 48%;
