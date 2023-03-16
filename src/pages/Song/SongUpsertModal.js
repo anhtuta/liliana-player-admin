@@ -341,6 +341,13 @@ class SongUpsertModal extends PureComponent {
       })
     };
     const { zing_id } = this.props.selectedRow;
+    const btnFindLyric = (
+      <i
+        className="fa fa-eye icon-btn-action icon-btn-edit btn-find-file"
+        onClick={() => this.setState({ showFindLyricModal: true })}
+        title={'Select available lyrics'}
+      ></i>
+    );
 
     return (
       <NormalModal
@@ -499,11 +506,7 @@ class SongUpsertModal extends PureComponent {
                     uploading={uploadingLyric}
                   />
                 </div>
-                <i
-                  className="fa fa-eye icon-btn-action icon-btn-edit btn-find-file"
-                  onClick={() => this.setState({ showFindLyricModal: true })}
-                  title={'Select available lyrics'}
-                ></i>
+                {btnFindLyric}
               </div>
             ))}
           {lyric && (
@@ -522,11 +525,7 @@ class SongUpsertModal extends PureComponent {
                   onClear={this.onClearLyric}
                 />
               </div>
-              <i
-                className="fa fa-eye icon-btn-action icon-btn-edit btn-find-file"
-                onClick={() => this.setState({ showFindLyricModal: true })}
-                title={'Select available lyrics'}
-              ></i>
+              {btnFindLyric}
             </div>
           )}
         </div>
