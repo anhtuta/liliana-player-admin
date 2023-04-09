@@ -103,6 +103,40 @@ But when I switch to macOS, I need to change it to:
 "start": "cross-env PORT=3006 react-scripts start",
 ```
 
+### Setup and deploy github page manually
+
+Add following dependency:
+
+```
+yarn add gh-pages
+```
+
+Add following scripts in `package.json` file:
+
+```
+"predeploy": "npm run build:prd",
+"deploy": "gh-pages -d build",
+```
+
+- The `predeploy` script is used to bundle the React application. Note: I'm using `build:prd` command for it, to build my app using `.env.prd` file
+- The `deploy` script deploys the bundled file
+
+Go to repo on github, go to `Settings` tab, and config like below
+
+![](./gh-pages-setting.png)
+
+Done! Now each time you want to deploy to production, run following command: `yarn deploy`
+
+And then, gh-pages will build the app using `predeploy` command, then it will push all the build contents (inside the `build` folder) to remote repo, on branch `gh-pages`. You can see it here: https://github.com/anhtuta/liliana-player-admin/tree/gh-pages (Please do not create a PR from it to master 😅)
+
+Then, your site will be hosted on that branch, completely independent with master branch
+
+Now, visit your site: https://anhtuta.github.io/liliana-player-admin/
+
+Nhớ nhé, mỗi khi sửa code xong, build lên github page = lệnh: `yarn deploy`
+
+Ref: https://blog.logrocket.com/deploying-react-apps-github-pages/
+
 ---
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
