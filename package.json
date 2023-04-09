@@ -33,7 +33,7 @@
     "build": "react-scripts build",
     "build:stg": "env-cmd -f .env.stg react-scripts build",
     "build:prd": "env-cmd -f .env.prd react-scripts build",
-    "predeploy": "npm run build",
+    "predeploy": "npm run build:prd",
     "deploy": "gh-pages -d build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
