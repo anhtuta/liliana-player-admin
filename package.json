@@ -6,7 +6,7 @@
   "dependencies": {
     "@loadable/component": "^5.14.1",
     "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
+    "@testing-library/react": "^12.1.5",
     "@testing-library/user-event": "^14.4.3",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
