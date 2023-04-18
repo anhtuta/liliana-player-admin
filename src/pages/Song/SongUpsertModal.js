@@ -14,6 +14,7 @@ import SongService from './SongService';
 import SongZingItem from './SongZingItem';
 import { cleanWithHyphen } from '../../service/utils';
 import musicIcon from '../../assets/icons/music_icon.jpg';
+import { SOY_OPTIONS } from './Song';
 import './SongUpsertModal.scss';
 
 const TAB_UPLOAD_FILE = 'TAB_UPLOAD_FILE';
@@ -22,7 +23,8 @@ const TAB_ZING_MP3 = 'TAB_ZING_MP3';
 class SongUpsertModal extends PureComponent {
   constructor(props) {
     super(props);
-    const { id, title, artist, imageUrl, album, path, type, lyric, zing_id } = props.selectedRow;
+    const { id, title, artist, imageUrl, soy, album, path, type, lyric, zing_id } =
+      props.selectedRow;
     this.state = {
       tabKey: TAB_UPLOAD_FILE,
       id,
@@ -30,6 +32,7 @@ class SongUpsertModal extends PureComponent {
       artist: artist ? artist : '',
       pictureBase64: null, // dùng cho ảnh được upload từ local
       imageUrl, // dùng cho ảnh của Zing
+      soy,
       album: album ? album : '',
       path: path ? path : '',
       type,
@@ -59,6 +62,12 @@ class SongUpsertModal extends PureComponent {
     this.setState({
       [obj.name]: obj.value,
       invalid: copyOfInvalid
+    });
+  };
+
+  handleOnChangeSoy = (obj) => {
+    this.setState({
+      soy: { label: obj.label, value: obj.value }
     });
   };
 
@@ -102,6 +111,7 @@ class SongUpsertModal extends PureComponent {
       artist,
       pictureBase64,
       imageUrl,
+      soy,
       album,
       path,
       type,
@@ -126,6 +136,9 @@ class SongUpsertModal extends PureComponent {
     }
     formData.append('path', path);
 
+    if (soy && soy.value !== null) formData.append('song_of_the_year', soy.value);
+    // Nếu muốn truyền null: phải delete key đó nếu ko nó sẽ gửi sang backend string 'null'
+    else formData.delete('song_of_the_year');
     if (album) formData.append('album', album);
     if (lyric) formData.append('lyric', lyric);
 
@@ -319,6 +332,7 @@ class SongUpsertModal extends PureComponent {
       artist,
       pictureBase64,
       imageUrl,
+      soy,
       album,
       path,
       type,
@@ -449,6 +463,16 @@ class SongUpsertModal extends PureComponent {
               )}
             </div>
           </div>
+        </div>
+        <div>
+          <Select
+            name="song_of_the_year"
+            label="Song of the year"
+            className="box-select"
+            defaultValue={soy}
+            options={SOY_OPTIONS}
+            onChange={this.handleOnChangeSoy}
+          />
         </div>
         <div className="album-path">
           <InputText

@@ -9,9 +9,20 @@ import PictureModal from './PictureModal';
 import Toast from '../../components/Toast/Toast';
 import ConfirmModal from '../../components/Modal/ConfirmModal';
 import SongService from './SongService';
-import { getAbsoluteUrl } from '../../service/utils';
+import { arrayFromRange, getAbsoluteUrl } from '../../service/utils';
 import musicIcon from '../../assets/icons/music_icon.jpg';
 import './Song.scss';
+
+export const SOY_OPTIONS = [
+  {
+    value: null,
+    label: 'None'
+  },
+  ...arrayFromRange(2024, 2010).map((year) => ({
+    value: year,
+    label: year
+  }))
+];
 
 class Song extends PureComponent {
   constructor(props) {
@@ -101,6 +112,10 @@ class Song extends PureComponent {
             }
           } else return <span>{NO_LYRIC}</span>;
         }
+      },
+      {
+        Header: 'SOY',
+        accessor: 'song_of_the_year'
       },
       {
         Header: 'Created date',
@@ -202,6 +217,12 @@ class Song extends PureComponent {
     });
   };
 
+  getSoyOption = (year) => {
+    return SOY_OPTIONS.find((option) => {
+      return option.value === year;
+    });
+  };
+
   getTypeOption = (name) => {
     return this.state.typeOptions.find((option) => {
       return option.value === name;
@@ -214,6 +235,7 @@ class Song extends PureComponent {
       title: original.title,
       artist: original.artist,
       imageUrl: original.imageUrl ? getAbsoluteUrl(original.imageUrl) : null,
+      soy: this.getSoyOption(original.song_of_the_year),
       album: original.album,
       path: original.path,
       type: this.getTypeOption(original.type),
