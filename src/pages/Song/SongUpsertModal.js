@@ -138,6 +138,7 @@ class SongUpsertModal extends PureComponent {
 
     if (soy && soy.value !== null) formData.append('song_of_the_year', soy.value);
     // Nếu muốn truyền null: phải delete key đó nếu ko nó sẽ gửi sang backend string 'null'
+    // Ref: https://stackoverflow.com/a/62303327/7688028
     else formData.delete('song_of_the_year');
     if (album) formData.append('album', album);
     if (lyric) formData.append('lyric', lyric);

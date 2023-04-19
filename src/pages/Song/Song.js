@@ -18,7 +18,7 @@ export const SOY_OPTIONS = [
     value: null,
     label: 'None'
   },
-  ...arrayFromRange(2024, 2010).map((year) => ({
+  ...arrayFromRange(new Date().getFullYear(), 1970).map((year) => ({
     value: year,
     label: year
   }))
