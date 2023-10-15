@@ -12,6 +12,12 @@ This project has been developing with Nodejs version 16
 - `yarn start`
 - Open browser and see the result: http://localhost:3006/#/
 
+## How to deploy on github page
+
+Mỗi khi sửa code, phải deploy lên github page bằng lệnh: `yarn deploy`
+
+Chi tiết xem ở dưới
+
 ### Using docker: build and run with production env
 
 - Build image: `docker build -t anhtuta/lili-admin:v1 .`
