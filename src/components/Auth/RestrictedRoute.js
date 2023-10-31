@@ -1,24 +1,29 @@
 import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { auth } from './Auth';
 
-const RestrictedRoute = ({ component: Component, ...rest }) => {
-  return (
-    // Show the component only when the user is NOT logged in
-    // Otherwise, redirect the user to home page
-    <Route
-      {...rest}
-      render={(props) =>
-        auth.isAuthenticated() ? <Redirect to="/" /> : <Component {...props} />
-      }
-    />
-  );
+/**
+ * Nếu đã login rồi thì Route này sẽ return về home page.
+ *
+ * Ví dụ page dùng route này: Login page. Hiển nhiên khi user đã login rồi mà lại cố tình
+ * vào lại trang login thì phải redirect họ về home page
+ *
+ * Ref: https://dev.to/iamandrewluca/private-route-in-react-router-v6-lg5
+ */
+const RestrictedRoute = ({ children }) => {
+  return !auth.isAuthenticated() ? <>{children}</> : <Navigate to="/" />;
 };
 
 export default RestrictedRoute;
 
 /*
-<Component {...props} />:
-Cần truyền các props của Route cho component để nó đọc giá trị location.state.from, dùng để redirect
-(Xem bên component Login)
+Sử dụng: dùng route này bên trong Route của react router, ex:
+<Route
+  path="/login"
+  element={
+    <RestrictedRoute>
+      <Login />
+    </RestrictedRoute>
+  }
+/>
 */

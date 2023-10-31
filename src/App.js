@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
-import { HashRouter, Route, Switch } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { auth } from './components/Auth/Auth';
 import PrivateRoute from './components/Auth/PrivateRoute';
 import RestrictedRoute from './components/Auth/RestrictedRoute';
-import * as Loadable from './components/Loadable/Loadable';
+import Home from './pages/Home/Home';
+import About from './pages/About/About';
+import Login from './pages/Login/Login';
+import Song from './pages/Song/Song';
+import NotFound from './pages/NotFound/NotFound';
+import Nav from './components/Nav/Nav';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './scss/App.scss';
 
@@ -37,15 +42,29 @@ class App extends Component {
     return (
       <HashRouter>
         <div className="app">
-          <Loadable.Nav userInfo={userInfo} />
+          <Nav userInfo={userInfo} />
           <div className="app-content">
-            <Switch>
-              <Route exact path="/" component={Loadable.Home} />
-              <Route exact path="/about" component={Loadable.About} />
-              <RestrictedRoute exact path="/login" component={Loadable.Login} />
-              <PrivateRoute exact path="/song" component={Loadable.Song} userInfo={userInfo} />
-              <Route path="" component={Loadable.NotFound} />
-            </Switch>
+            <Routes>
+              <Route index element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route
+                path="/login"
+                element={
+                  <RestrictedRoute>
+                    <Login />
+                  </RestrictedRoute>
+                }
+              />
+              <Route
+                path="/song"
+                element={
+                  <PrivateRoute userInfo={userInfo}>
+                    <Song />
+                  </PrivateRoute>
+                }
+              />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
           </div>
         </div>
         <ToastContainer />

@@ -1,7 +1,6 @@
-import { ACCESS_TOKEN } from '../../constants/Constants';
+import { ACCESS_TOKEN, ROLE_TABLE } from '../../constants/Constants';
 import axiosClient from '../../service/axiosClient';
 import Toast from '../Toast/Toast';
-import { ROLE_TABLE } from '../../constants/Constants';
 
 class Auth {
   constructor() {
@@ -54,8 +53,8 @@ class Auth {
     if (localStorage.getItem(ACCESS_TOKEN)) {
       Toast.error('Access token has been expired!');
       localStorage.removeItem(ACCESS_TOKEN);
-    } else if (response && response.data) {
-      Toast.error(response.data.message);
+    } else if (response?.data) {
+      Toast.error(response?.data?.message);
     } else {
       Toast.info('You need to login first!');
     }

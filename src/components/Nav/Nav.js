@@ -1,18 +1,21 @@
-import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { MENU_ITEMS } from '../../constants/Constants';
 import { auth } from '../Auth/Auth';
 import './Nav.scss';
 
-class Nav extends Component {
-  handleLogout = () => {
+function Nav({ userInfo }) {
+  const pathname = useLocation().pathname;
+  // console.log('pathname', pathname);
+
+  const handleLogout = () => {
     auth.logout();
   };
 
-  getActiveMenuItems = (roleArray, menuItems) => {
+  const getActiveMenuItems = (roleArray, menuItems) => {
     menuItems.forEach((item, index) => {
       if (item.subItems) {
-        this.getActiveMenuItems(roleArray, item.subItems);
+        getActiveMenuItems(roleArray, item.subItems);
       } else {
         if (!auth.rolesHasPermission(roleArray, item.path)) {
           // ĐỪNG dùng splice, bởi vì JS bất đồng bộ nên sẽ bị lỗi thỉnh thoảng bị miss menu item
@@ -25,8 +28,7 @@ class Nav extends Component {
     });
   };
 
-  generateMenu = (menuItems) => {
-    const { pathname } = this.props.location;
+  const generateMenu = (menuItems) => {
     return menuItems.map((item) => {
       const itemClass = 'menu-item' + (item.path === pathname ? ' active-menu' : '');
       if (item.path === null) item.path = '#';
@@ -42,7 +44,7 @@ class Nav extends Component {
               ></i>
             </Link>
             <ul key={item.key} className={itemClass + ' sub-menu level' + (item.level + 1)}>
-              {this.generateMenu(item.subItems)}
+              {generateMenu(item.subItems)}
             </ul>
           </li>
         );
@@ -62,31 +64,27 @@ class Nav extends Component {
     });
   };
 
-  render() {
-    const { userInfo } = this.props;
-    const roleArray = userInfo ? userInfo.roleArray : [];
-    const menuItems = [...MENU_ITEMS];
-    this.getActiveMenuItems(roleArray, menuItems);
+  const roleArray = userInfo ? userInfo.roleArray : [];
+  const menuItems = [...MENU_ITEMS];
+  getActiveMenuItems(roleArray, menuItems);
 
-    return (
-      <nav className="custom-navbar">
-        <ul className="nav-wrapper">{this.generateMenu(menuItems)}</ul>
-        <div className="userinfo-wrapper">
-          {!userInfo && <Link to="/login">Login</Link>}
-          {userInfo && (
-            <div>
-              {userInfo.name} (
-              <span className="logout-link" onClick={this.handleLogout}>
-                Logout
-              </span>
-              )
-            </div>
-          )}
-        </div>
-      </nav>
-    );
-  }
+  return (
+    <nav className="custom-navbar">
+      <ul className="nav-wrapper">{generateMenu(menuItems)}</ul>
+      <div className="userinfo-wrapper">
+        {!userInfo && <Link to="/login">Login</Link>}
+        {userInfo && (
+          <div>
+            {userInfo.name} (
+            <span className="logout-link" onClick={handleLogout}>
+              Logout
+            </span>
+            )
+          </div>
+        )}
+      </div>
+    </nav>
+  );
 }
 
-// Use withRouter HOC in order to inject match, history and location in your component props.
-export default withRouter(Nav);
+export default Nav;
