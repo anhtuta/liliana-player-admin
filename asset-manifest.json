@@ -1,35 +1,18 @@
 {
   "files": {
-    "main.css": "./static/css/main.7f9caa3b.chunk.css",
-    "main.js": "./static/js/main.629ec4af.chunk.js",
-    "runtime-main.js": "./static/js/runtime-main.290d9df0.js",
-    "static/css/2.c967da47.chunk.css": "./static/css/2.c967da47.chunk.css",
-    "static/js/2.92a4a939.chunk.js": "./static/js/2.92a4a939.chunk.js",
-    "static/css/3.b93ed0b7.chunk.css": "./static/css/3.b93ed0b7.chunk.css",
-    "static/js/3.485edb7e.chunk.js": "./static/js/3.485edb7e.chunk.js",
-    "static/css/4.4c3fbbbb.chunk.css": "./static/css/4.4c3fbbbb.chunk.css",
-    "static/js/4.447ed7c3.chunk.js": "./static/js/4.447ed7c3.chunk.js",
-    "static/css/5.cfc47b54.chunk.css": "./static/css/5.cfc47b54.chunk.css",
-    "static/js/5.9d60b5e0.chunk.js": "./static/js/5.9d60b5e0.chunk.js",
-    "static/css/6.a22ab999.chunk.css": "./static/css/6.a22ab999.chunk.css",
-    "static/js/6.3bbe5229.chunk.js": "./static/js/6.3bbe5229.chunk.js",
-    "static/js/7.d50dbc81.chunk.js": "./static/js/7.d50dbc81.chunk.js",
-    "static/js/8.7d3d61cb.chunk.js": "./static/js/8.7d3d61cb.chunk.js",
-    "static/js/9.4d2251f3.chunk.js": "./static/js/9.4d2251f3.chunk.js",
+    "main.css": "./static/css/main.9f85f4eb.css",
+    "main.js": "./static/js/main.d55f6451.js",
+    "static/js/522.658009ca.chunk.js": "./static/js/522.658009ca.chunk.js",
+    "static/media/fontawesome-webfont.svg?v=4.7.0": "./static/media/fontawesome-webfont.c1e38fd9e0e74ba58f7a.svg",
+    "static/media/fontawesome-webfont.eot": "./static/media/fontawesome-webfont.8b43027f47b20503057d.eot",
+    "static/media/fontawesome-webfont.ttf?v=4.7.0": "./static/media/fontawesome-webfont.1e59d2330b4c6deb84b3.ttf",
+    "static/media/fontawesome-webfont.woff?v=4.7.0": "./static/media/fontawesome-webfont.f691f37e57f04c152e23.woff",
+    "static/media/fontawesome-webfont.woff2?v=4.7.0": "./static/media/fontawesome-webfont.20fd1704ea223900efa9.woff2",
     "index.html": "./index.html",
-    "precache-manifest.9dedceee46f2931fffb83d25feb4c018.js": "./precache-manifest.9dedceee46f2931fffb83d25feb4c018.js",
-    "service-worker.js": "./service-worker.js",
-    "static/js/2.92a4a939.chunk.js.LICENSE.txt": "./static/js/2.92a4a939.chunk.js.LICENSE.txt",
-    "static/js/3.485edb7e.chunk.js.LICENSE.txt": "./static/js/3.485edb7e.chunk.js.LICENSE.txt",
-    "static/js/4.447ed7c3.chunk.js.LICENSE.txt": "./static/js/4.447ed7c3.chunk.js.LICENSE.txt",
-    "static/media/font-awesome.min.css": "./static/media/fontawesome-webfont.fee66e71.woff",
-    "static/media/Input.scss": "./static/media/icon-loading.e47c9ef5.svg"
+    "static/media/icon-loading.svg": "./static/media/icon-loading.4f361dbf8bddb1ec96bc.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.290d9df0.js",
-    "static/css/3.b93ed0b7.chunk.css",
-    "static/js/3.485edb7e.chunk.js",
-    "static/css/main.7f9caa3b.chunk.css",
-    "static/js/main.629ec4af.chunk.js"
+    "static/css/main.9f85f4eb.css",
+    "static/js/main.d55f6451.js"
   ]
 }
