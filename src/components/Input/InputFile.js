@@ -5,7 +5,7 @@ class InputFile extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      fileName: '',
+      fileName: props.fileName || '',
       isDragging: false
     };
     this.inputFile = React.createRef();

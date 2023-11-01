@@ -13,6 +13,7 @@ const DEFAULT_INPUT_MAX_LENGTH = 200;
  * Method onReset sẽ ko change state value, mà gọi method onReset của parent, parent sau đó
  * change state 'abcde' của nó, sau đó lại rerender lại và lại truyền 'abcde' đó
  * cho component này, nhờ có getDerivedStateFromProps nên value của nó sẽ được set lại
+ * Note2: defaultValue thực chất là initValue cho input text
  */
 class InputText extends PureComponent {
   constructor(props) {
