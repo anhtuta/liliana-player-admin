@@ -41,7 +41,6 @@ export default function Login() {
     );
   };
 
-  console.log('render');
   const { username, password } = form;
 
   return (

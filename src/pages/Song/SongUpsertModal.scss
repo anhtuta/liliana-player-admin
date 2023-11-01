@@ -1,6 +1,14 @@
 .song-upsert-modal {
   // TODO remove important
   max-width: min(900px, 90vw) !important;
+  .source-of-song {
+    padding-bottom: 10px;
+    border-bottom: 2px solid mediumpurple;
+    .source-info {
+      color: orange;
+      cursor: pointer;
+    }
+  }
   .title-artist-picture {
     display: flex;
     flex-direction: row;

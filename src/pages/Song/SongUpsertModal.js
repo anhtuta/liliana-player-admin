@@ -23,26 +23,26 @@ const TAB_ZING_MP3 = 'TAB_ZING_MP3';
 class SongUpsertModal extends PureComponent {
   constructor(props) {
     super(props);
-    const { id, title, artist, imageUrl, soy, album, path, type, lyric, zing_id } =
+    const { id, title, artist, imageUrl, soy, album, path, type, lyric, zing_id, fileName } =
       props.selectedRow;
     this.state = {
-      tabKey: TAB_UPLOAD_FILE,
+      tabKey: zing_id ? TAB_ZING_MP3 : TAB_UPLOAD_FILE,
       id,
-      title: title ? title : '',
-      artist: artist ? artist : '',
-      pictureBase64: null, // dùng cho ảnh được upload từ local
+      title: title || '',
+      artist: artist || '',
+      picture_base64: null, // dùng cho ảnh được upload từ local
       imageUrl, // dùng cho ảnh của Zing
       soy,
-      album: album ? album : '',
-      path: path ? path : '',
+      album: album || '',
+      path: path || '',
       type,
       lyric,
-      zing_id,
+      zing_id: zing_id || '',
       invalid: {
         title: false
       },
       file: null,
-      fileName: '',
+      fileName: fileName || '',
       lyricFileName: '',
       loading: false,
       uploadingMp3: false,
@@ -109,7 +109,7 @@ class SongUpsertModal extends PureComponent {
       id,
       title,
       artist,
-      pictureBase64,
+      picture_base64,
       imageUrl,
       soy,
       album,
@@ -131,26 +131,27 @@ class SongUpsertModal extends PureComponent {
     let formData = new FormData();
     formData.append('title', title);
     formData.append('artist', artist);
-    if (pictureBase64) {
-      formData.append('pictureBase64', pictureBase64.replace('data:', '').replace(/^.+,/, ''));
+    if (picture_base64) {
+      formData.append('picture_base64', picture_base64.replace('data:', '').replace(/^.+,/, ''));
     }
     formData.append('path', path);
 
-    if (soy && soy.value !== null) formData.append('song_of_the_year', soy.value);
+    if (soy?.value) formData.append('song_of_the_year', soy.value);
     // Nếu muốn truyền null: phải delete key đó nếu ko nó sẽ gửi sang backend string 'null'
     // Ref: https://stackoverflow.com/a/62303327/7688028
     else formData.delete('song_of_the_year');
     if (album) formData.append('album', album);
     if (lyric) formData.append('lyric', lyric);
 
+    if (zing_id) {
+      formData.append('zing_id', zing_id);
+      if (imageUrl) formData.append('image_url', imageUrl);
+    }
+
     if (action === ACTION_ADD) {
       this.setState({ uploadingMp3: true });
       formData.append('type', type.value);
       formData.append('file', file);
-      if (zing_id) {
-        formData.append('zing_id', zing_id);
-        if (imageUrl) formData.append('imageUrl', imageUrl);
-      }
       SongService.createSong(formData)
         .then((res) => {
           Toast.success(res.message);
@@ -185,7 +186,7 @@ class SongUpsertModal extends PureComponent {
         const tags = window.ID3.getAllTags(url);
         const { title, artist, album } = tags;
         const path = this.generatePath(title, artist);
-        let pictureBase64 = null;
+        let picture_base64 = null;
 
         if ('picture' in tags) {
           const image = tags.picture;
@@ -193,10 +194,10 @@ class SongUpsertModal extends PureComponent {
           for (const element of image.data) {
             base64String += String.fromCharCode(element);
           }
-          pictureBase64 = 'data:' + image.format + ';base64,' + window.btoa(base64String);
+          picture_base64 = 'data:' + image.format + ';base64,' + window.btoa(base64String);
         }
 
-        this.setState({ title, artist, pictureBase64, album, path, file });
+        this.setState({ title, artist, picture_base64, album, path, file });
       },
       {
         tags: [
@@ -240,9 +241,9 @@ class SongUpsertModal extends PureComponent {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      const pictureBase64 = reader.result;
+      const picture_base64 = reader.result;
       this.setState({
-        pictureBase64,
+        picture_base64,
         removePicture: 0
       });
     };
@@ -250,7 +251,7 @@ class SongUpsertModal extends PureComponent {
 
   resetPicture = () => {
     this.setState({
-      pictureBase64: null,
+      picture_base64: null,
       imageUrl: null,
       removePicture: 1
     });
@@ -299,6 +300,7 @@ class SongUpsertModal extends PureComponent {
    * @param {object} obj
    */
   getOptionLabel = (obj) => {
+    console.log('[getOptionLabel] obj', obj);
     const { title, artistsNames, thumbnailM } = obj;
     return <SongZingItem title={title} artistsNames={artistsNames} thumbnailM={thumbnailM} />;
   };
@@ -331,8 +333,9 @@ class SongUpsertModal extends PureComponent {
       tabKey,
       title,
       artist,
-      pictureBase64,
+      picture_base64,
       imageUrl,
+      zing_id,
       soy,
       album,
       path,
@@ -355,7 +358,6 @@ class SongUpsertModal extends PureComponent {
         minHeight: 52
       })
     };
-    const { zing_id } = this.props.selectedRow;
     const btnFindLyric = (
       <i
         className="fa fa-eye icon-btn-action icon-btn-edit btn-find-file"
@@ -363,6 +365,12 @@ class SongUpsertModal extends PureComponent {
         title={'Select available lyrics'}
       ></i>
     );
+    const defaultValueZingItem = {
+      title,
+      artistsNames: artist,
+      thumbnailM: imageUrl,
+      zing_id
+    };
 
     return (
       <NormalModal
@@ -384,7 +392,15 @@ class SongUpsertModal extends PureComponent {
         onCancel={onCloseUpsertModal}
         disabledBtn={loading}
       >
-        {action === ACTION_ADD && (
+        <div className="source-of-song">
+          <h5>
+            Source of song{' '}
+            <i
+              class="fa fa-info-circle source-info"
+              aria-hidden="true"
+              title="Note: only allow single source. If you Zing, it will remove the existed mp3 file"
+            ></i>
+          </h5>
           <Tabs id="tab-add-song-type" activeKey={tabKey} onSelect={this.handleOnChangeTab}>
             <Tab eventKey={TAB_UPLOAD_FILE} title="Upload file" tabClassName="tab-upload-file">
               <InputFile
@@ -399,7 +415,8 @@ class SongUpsertModal extends PureComponent {
             <Tab eventKey={TAB_ZING_MP3} title="Zing Mp3" tabClassName="tab-zing-mp3">
               <SelectAsync
                 name="selectZingSong"
-                label="Select a song from Zing Mp3"
+                defaultValue={defaultValueZingItem}
+                label={`Search and select a song from Zing Mp3 (${zing_id})`}
                 placeholder="Search song"
                 isRequire={true}
                 onChange={this.selectZingSong}
@@ -411,7 +428,7 @@ class SongUpsertModal extends PureComponent {
               />
             </Tab>
           </Tabs>
-        )}
+        </div>
         <div className="title-artist-picture">
           <div className="title-artist">
             <InputText
@@ -438,15 +455,15 @@ class SongUpsertModal extends PureComponent {
               onChange={this.changePicture}
             />
             <img
-              src={pictureBase64 ? pictureBase64 : imageUrl ? imageUrl : musicIcon}
+              src={picture_base64 || imageUrl || musicIcon}
               alt={`${title} (${artist})`}
               onClick={() => {
-                const url = pictureBase64 ? pictureBase64 : imageUrl;
+                const url = picture_base64 || imageUrl;
                 if (url) {
                   this.displayPictureModal({ url, title });
                 }
               }}
-              style={{ cursor: pictureBase64 || imageUrl ? 'pointer' : 'default' }}
+              style={{ cursor: picture_base64 || imageUrl ? 'pointer' : 'default' }}
             />
             <div className="btn-wrapper">
               <i
@@ -455,7 +472,7 @@ class SongUpsertModal extends PureComponent {
                 title="Change picture"
               ></i>
               &nbsp;
-              {(pictureBase64 || imageUrl) && (
+              {(picture_base64 || imageUrl) && (
                 <i
                   className="fa fa-trash icon-btn-action icon-btn-delete"
                   onClick={this.resetPicture}

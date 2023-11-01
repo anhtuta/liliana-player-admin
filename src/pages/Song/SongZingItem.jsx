@@ -11,7 +11,7 @@ const SongZingItem = (props) => {
   return (
     <div className="song-zing-item">
       <div className="td-song-info">
-        <img className="song-picture" src={thumbnailM ? thumbnailM : musicIcon} alt={title} />
+        <img className="song-picture" src={thumbnailM || musicIcon} alt={title} />
         <div className="song-item">
           <div className="song-title">{title}</div>
           <div className="song-artist">{artistsNames}</div>
