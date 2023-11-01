@@ -53,12 +53,12 @@ class Song extends PureComponent {
             <div className="td-song-info">
               <img
                 className="song-picture"
-                src={original.imageUrl ? getAbsoluteUrl(original.imageUrl) : musicIcon}
+                src={original.image_url ? getAbsoluteUrl(original.image_url) : musicIcon}
                 alt=""
                 onClick={() => {
-                  if (original.imageUrl) this.displayPictureModal(original);
+                  if (original.image_url) this.displayPictureModal(original);
                 }}
-                style={{ cursor: original.imageUrl ? 'pointer' : 'default' }}
+                style={{ cursor: original.image_url ? 'pointer' : 'default' }}
               />
               <div className="song-item">
                 <div className="song-title" title="Song name">
@@ -152,7 +152,7 @@ class Song extends PureComponent {
   displayPictureModal = (original) => {
     this.setState({
       showPictureModal: true,
-      pictureUrl: getAbsoluteUrl(original.imageUrl),
+      pictureUrl: getAbsoluteUrl(original.image_url),
       pictureTitle: original.title + "'s picture"
     });
   };
@@ -234,7 +234,7 @@ class Song extends PureComponent {
       id: original.id,
       title: original.title,
       artist: original.artist,
-      imageUrl: original.imageUrl ? getAbsoluteUrl(original.imageUrl) : null,
+      image_url: original.image_url ? getAbsoluteUrl(original.image_url) : null,
       soy: this.getSoyOption(original.song_of_the_year),
       album: original.album,
       path: original.path,

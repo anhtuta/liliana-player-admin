@@ -23,7 +23,7 @@ const TAB_ZING_MP3 = 'TAB_ZING_MP3';
 class SongUpsertModal extends PureComponent {
   constructor(props) {
     super(props);
-    const { id, title, artist, imageUrl, soy, album, path, type, lyric, zing_id, file_name } =
+    const { id, title, artist, image_url, soy, album, path, type, lyric, zing_id, file_name } =
       props.selectedRow;
     this.state = {
       tabKey: zing_id ? TAB_ZING_MP3 : TAB_UPLOAD_FILE,
@@ -31,7 +31,7 @@ class SongUpsertModal extends PureComponent {
       title: title || '',
       artist: artist || '',
       picture_base64: null, // dùng cho ảnh được upload từ local
-      imageUrl, // dùng cho ảnh của Zing
+      image_url, // dùng cho ảnh của Zing
       soy,
       album: album || '',
       path: path || '',
@@ -90,7 +90,7 @@ class SongUpsertModal extends PureComponent {
     this.setState({
       title: selected.title ? selected.title : '',
       artist: selected.artistsNames ? selected.artistsNames : '',
-      imageUrl: selected.thumbnailM ? selected.thumbnailM : null,
+      image_url: selected.thumbnailM ? selected.thumbnailM : null,
       album: selected.album ? selected.album.title : '',
       path: selected.title ? this.generatePath(selected.title, selected.artistsNames) : '',
       zing_id: selected.encodeId ? selected.encodeId : null
@@ -110,7 +110,7 @@ class SongUpsertModal extends PureComponent {
       title,
       artist,
       picture_base64,
-      imageUrl,
+      image_url,
       soy,
       album,
       path,
@@ -145,7 +145,7 @@ class SongUpsertModal extends PureComponent {
 
     if (zing_id) {
       formData.append('zing_id', zing_id);
-      if (imageUrl) formData.append('image_url', imageUrl);
+      if (image_url) formData.append('image_url', image_url);
     }
 
     if (action === ACTION_ADD) {
@@ -252,7 +252,7 @@ class SongUpsertModal extends PureComponent {
   resetPicture = () => {
     this.setState({
       picture_base64: null,
-      imageUrl: null,
+      image_url: null,
       removePicture: 1
     });
   };
@@ -333,7 +333,7 @@ class SongUpsertModal extends PureComponent {
       title,
       artist,
       picture_base64,
-      imageUrl,
+      image_url,
       zing_id,
       soy,
       album,
@@ -367,7 +367,7 @@ class SongUpsertModal extends PureComponent {
     const defaultValueZingItem = {
       title,
       artistsNames: artist,
-      thumbnailM: imageUrl,
+      thumbnailM: image_url,
       zing_id
     };
 
@@ -454,15 +454,15 @@ class SongUpsertModal extends PureComponent {
               onChange={this.changePicture}
             />
             <img
-              src={picture_base64 || imageUrl || musicIcon}
+              src={picture_base64 || image_url || musicIcon}
               alt={`${title} (${artist})`}
               onClick={() => {
-                const url = picture_base64 || imageUrl;
+                const url = picture_base64 || image_url;
                 if (url) {
                   this.displayPictureModal({ url, title });
                 }
               }}
-              style={{ cursor: picture_base64 || imageUrl ? 'pointer' : 'default' }}
+              style={{ cursor: picture_base64 || image_url ? 'pointer' : 'default' }}
             />
             <div className="btn-wrapper">
               <i
@@ -471,7 +471,7 @@ class SongUpsertModal extends PureComponent {
                 title="Change picture"
               ></i>
               &nbsp;
-              {(picture_base64 || imageUrl) && (
+              {(picture_base64 || image_url) && (
                 <i
                   className="fa fa-trash icon-btn-action icon-btn-delete"
                   onClick={this.resetPicture}
