@@ -240,7 +240,7 @@ class Song extends PureComponent {
       path: original.path,
       type: this.getTypeOption(original.type),
       lyric: original.lyric,
-      fileName: original.fileName,
+      file_name: original.file_name,
       zing_id: original.zing_id
     };
     this.setState({

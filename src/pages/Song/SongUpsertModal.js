@@ -23,7 +23,7 @@ const TAB_ZING_MP3 = 'TAB_ZING_MP3';
 class SongUpsertModal extends PureComponent {
   constructor(props) {
     super(props);
-    const { id, title, artist, imageUrl, soy, album, path, type, lyric, zing_id, fileName } =
+    const { id, title, artist, imageUrl, soy, album, path, type, lyric, zing_id, file_name } =
       props.selectedRow;
     this.state = {
       tabKey: zing_id ? TAB_ZING_MP3 : TAB_UPLOAD_FILE,
@@ -42,7 +42,7 @@ class SongUpsertModal extends PureComponent {
         title: false
       },
       file: null,
-      fileName: fileName || '',
+      file_name: file_name || '',
       lyricFileName: '',
       loading: false,
       uploadingMp3: false,
@@ -300,7 +300,6 @@ class SongUpsertModal extends PureComponent {
    * @param {object} obj
    */
   getOptionLabel = (obj) => {
-    console.log('[getOptionLabel] obj', obj);
     const { title, artistsNames, thumbnailM } = obj;
     return <SongZingItem title={title} artistsNames={artistsNames} thumbnailM={thumbnailM} />;
   };
@@ -341,7 +340,7 @@ class SongUpsertModal extends PureComponent {
       path,
       type,
       lyric,
-      fileName,
+      file_name,
       lyricFileName,
       loading,
       uploadingMp3,
@@ -408,7 +407,7 @@ class SongUpsertModal extends PureComponent {
                 types={this.fileTypes}
                 label="Please upload a mp3 file..."
                 isRequire={true}
-                fileName={fileName}
+                fileName={file_name}
                 uploading={uploadingMp3}
               />
             </Tab>

@@ -11,7 +11,6 @@ export default function Login() {
   const navigate = useNavigate();
 
   const onChange = (obj) => {
-    console.log('obj', obj);
     setForm({
       ...form,
       [obj.name]: obj.value
