@@ -78,6 +78,20 @@ class SongUpsertModal extends PureComponent {
   };
 
   handleOnChangeTab = async (tabKey = '') => {
+    // Cần xoá file hoặc zing_id khi chọn source khác.
+    // Note: dùng xoá zing_id, và sau đó state defaultValueZingItem = null, thì sau khi chọn lại cái tab
+    // Zing Mp3 thì nó vẫn hiển thị song đó trên Select, bởi vì defaultValue chỉ là initValue,
+    // nên khi props này thay đổi thì component SelectAsync ở dưới vẫn không re-render lại. Kệ nó!
+    if (tabKey === TAB_UPLOAD_FILE) {
+      this.setState({
+        zing_id: ''
+      });
+    } else if (tabKey === TAB_ZING_MP3) {
+      this.setState({
+        file: null
+      });
+    }
+
     // Note: phải use await nếu ko nó sẽ focus trước khi setState thực hiện xong,
     // mà chưa setState xong tức là chưa chuyển được tab, thì focus ko có tác dụng
     await this.setState({ tabKey: tabKey });
@@ -403,7 +417,9 @@ class SongUpsertModal extends PureComponent {
             <i
               className="fa fa-info-circle source-info"
               aria-hidden="true"
-              title="Note: only allow single source. If you Zing, it will remove the existed mp3 file"
+              title="NOTE 1: only allow single source. If you Zing, it will remove the existed mp3 file.
+              NOTE 2: if lyric existed, then it will be kept (NOT re-download lyric from Zing).
+              NOTE 3: if you want to re-download lyric, use below button"
             ></i>
           </h5>
           <Tabs id="tab-add-song-type" activeKey={tabKey} onSelect={this.handleOnChangeTab}>
