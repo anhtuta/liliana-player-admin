@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import InputText from '../../components/Input/InputText';
@@ -45,7 +46,6 @@ class SongUpsertModal extends PureComponent {
       file_name: file_name || '',
       lyricFileName: '',
       loading: false,
-      uploadingMp3: false,
       uploadingLyric: false,
       removePicture: 0,
       showPictureModal: false,
@@ -120,7 +120,7 @@ class SongUpsertModal extends PureComponent {
       file,
       removePicture
     } = this.state;
-    const { action } = this.props;
+    const { action, onSave } = this.props;
 
     if (!title || !artist || !path || !type) {
       Toast.error('Please fill all required fields');
@@ -146,35 +146,40 @@ class SongUpsertModal extends PureComponent {
     if (zing_id) {
       formData.append('zing_id', zing_id);
       if (image_url) formData.append('image_url', image_url);
+    } else {
+      formData.append('file', file);
     }
 
     if (action === ACTION_ADD) {
-      this.setState({ uploadingMp3: true });
       formData.append('type', type.value);
-      formData.append('file', file);
       SongService.createSong(formData)
         .then((res) => {
+          this.setState({ loading: false });
           Toast.success(res.message);
-          this.setState({ loading: false, uploadingMp3: false });
-          this.props.onSave();
+          onSave();
         })
         .catch((err) => {
+          this.setState({ loading: false });
           Toast.error(err);
-          this.setState({ loading: false, uploadingMp3: false });
         });
     } else {
       formData.append('removePicture', removePicture);
       SongService.updateSong(id, formData)
         .then((res) => {
-          Toast.success(res.message);
           this.setState({ loading: false });
-          this.props.onSave();
+          Toast.success(res.message);
+          onSave();
         })
         .catch((err) => {
           this.setState({ loading: false });
           Toast.error(err);
         });
     }
+    // DO NOT set outside of then,catch, because this statement will be execute
+    // before then and catch due to those methods are async.
+    // Note: this case should use async, await to avoid setState loading too many places,
+    // and we can set it here at the end
+    // this.setState({ loading: false });
   };
 
   fileTypes = ['.mp3'];
@@ -232,7 +237,7 @@ class SongUpsertModal extends PureComponent {
       })
       .catch((err) => {
         Toast.error(err);
-        this.setState({ loading: false, uploadingLyric: true });
+        this.setState({ loading: false, uploadingLyric: false });
       });
   };
 
@@ -343,7 +348,6 @@ class SongUpsertModal extends PureComponent {
       file_name,
       lyricFileName,
       loading,
-      uploadingMp3,
       uploadingLyric,
       showPictureModal,
       showFindLyricModal,
@@ -395,7 +399,7 @@ class SongUpsertModal extends PureComponent {
           <h5>
             Source of song{' '}
             <i
-              class="fa fa-info-circle source-info"
+              className="fa fa-info-circle source-info"
               aria-hidden="true"
               title="Note: only allow single source. If you Zing, it will remove the existed mp3 file"
             ></i>
@@ -408,7 +412,7 @@ class SongUpsertModal extends PureComponent {
                 label="Please upload a mp3 file..."
                 isRequire={true}
                 fileName={file_name}
-                uploading={uploadingMp3}
+                uploading={loading}
               />
             </Tab>
             <Tab eventKey={TAB_ZING_MP3} title="Zing Mp3" tabClassName="tab-zing-mp3">
@@ -591,5 +595,14 @@ class SongUpsertModal extends PureComponent {
     );
   }
 }
+
+SongUpsertModal.propTypes = {
+  showUpsertModal: PropTypes.bool.isRequired,
+  onCloseUpsertModal: PropTypes.func.isRequired,
+  typeOptions: PropTypes.array.isRequired,
+  selectedRow: PropTypes.object.isRequired,
+  action: PropTypes.string.isRequired,
+  onSave: PropTypes.func.isRequired
+};
 
 export default SongUpsertModal;
