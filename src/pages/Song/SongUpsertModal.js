@@ -368,12 +368,14 @@ class SongUpsertModal extends PureComponent {
         title={'Select available lyrics'}
       ></i>
     );
-    const defaultValueZingItem = {
-      title,
-      artistsNames: artist,
-      thumbnailM: image_url,
-      zing_id
-    };
+    const defaultValueZingItem = zing_id
+      ? {
+          title,
+          artistsNames: artist,
+          thumbnailM: image_url,
+          zing_id
+        }
+      : null;
 
     return (
       <NormalModal
