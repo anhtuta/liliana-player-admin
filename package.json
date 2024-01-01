@@ -13,7 +13,7 @@
     "debounce-promise": "^3.1.2",
     "env-cmd": "^10.1.0",
     "font-awesome": "^4.7.0",
-    "gh-pages": "^6.0.0",
+    "gh-pages": "^6.1.1",
     "js-cookie": "^3.0.5",
     "moment": "^2.29.4",
     "query-string": "^8.1.0",
